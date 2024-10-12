@@ -52,7 +52,7 @@ public class Model {
 			
 			if (isEmptyDirectory(rootDirectory)) {
 				
-				JOptionPane.showMessageDialog(contentPane, "El directorio está vacío");
+				JOptionPane.showMessageDialog(contentPane, "Error: El directorio está vacío");
 				
 			}else {
 				
