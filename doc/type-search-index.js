@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"xgf.main","l":"Controller"},{"p":"xgf.main","l":"Main"},{"p":"xgf.main","l":"Model"},{"p":"xgf.main","l":"View"}];updateSearchResults();
