@@ -8,8 +8,8 @@ import javax.swing.JButton;
 public class AdminPanel {
 
 	private JFrame frame;
-	
 	private JButton btnNewUser;
+	private JButton btnImportCSV;
 
 	/**
 	 * Create the application.
@@ -30,10 +30,22 @@ public class AdminPanel {
 		btnNewUser.setBounds(496, 20, 118, 23);
 		frame.getContentPane().add(btnNewUser);
 		
+		btnImportCSV = new JButton("Importar CSV");
+		btnImportCSV.setBounds(356, 20, 130, 23);
+		frame.getContentPane().add(btnImportCSV);
+		
 		frame.setVisible(true);
 	}
 
 	public JButton getBtnNewUser() {
 		return btnNewUser;
+	}
+
+	public JButton getBtnImportCSV() {
+		return btnImportCSV;
+	}
+	
+	public JFrame getFrame() {
+		return frame;
 	}
 }
