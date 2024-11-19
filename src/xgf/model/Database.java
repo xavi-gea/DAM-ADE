@@ -77,41 +77,13 @@ public class Database {
 	}
 	
 	public static void removeTable (Connection connection, String tableName) throws SQLException {
-			
+		
 		Statement dropStatement = connection.createStatement();
 
 		dropStatement.executeUpdate(String.format("DROP TABLE IF EXISTS %s", tableName));
 
 		dropStatement.close();
 	}
-	
-//	public static void createTable(Connection connection, String tableName, String[] tableColumns) throws SQLException {
-//		
-//		Statement createStatement = connection.createStatement();
-//
-//		createStatement.executeUpdate(String.format(
-//				"CREATE TABLE %s ("
-//				+ "%s varchar(30), "
-//				+ "%s varchar(30), "
-//				+ "%s varchar(30), "
-//				+ "%s varchar(30), "
-//				+ "%s varchar(30), "
-//				+ "%s varchar(30), "
-//				+ "%s varchar(30), "
-//				+ "%s varchar(30))", 
-//				tableName, 
-//				tableColumns[0], 
-//				tableColumns[1], 
-//				tableColumns[2], 
-//				tableColumns[3],
-//				tableColumns[4],
-//				tableColumns[5],
-//				tableColumns[6],
-//				tableColumns[7])
-//		);
-//		
-//		createStatement.close();
-//	}
 	
 	public static void createTable(Connection connection, String tableName, String[] tableColumns) throws SQLException {
 		
@@ -131,6 +103,46 @@ public class Database {
 		createStatement.executeUpdate(statement);
 		
 		createStatement.close();
+	}
+
+
+	public static boolean insertPopulation(Connection connection, String string, List<String> fileValues) throws SQLException {
+		
+		boolean isSuccess = false;
+		
+		System.out.println(fileValues.toString());
+		
+		PreparedStatement psInsert = connection.prepareStatement("INSERT INTO population ("
+				+ "country, "
+				+ "population, "
+				+ "density, "
+				+ "area, "
+				+ "fertility, "
+				+ "age, "
+				+ "urban, "
+				+ "share"
+				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+		
+		for (int i = 0; i < fileValues.size(); i++) {
+			
+			System.out.println("Size: " + fileValues.size());
+			
+			System.out.println("Se va a a insertar: " + fileValues.get(i));
+			
+			psInsert.setString(i + 1, fileValues.get(i));
+		}
+		
+		int result = psInsert.executeUpdate();
+		
+		if (result > 0) {
+			
+			isSuccess = true;
+		}
+		
+		psInsert.close();
+		
+		return isSuccess;
+		
 	}
 
 

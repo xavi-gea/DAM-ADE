@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "91aa87960aad0cac",
+        "id": "f062064459af355c",
         "type": "tabs",
         "children": [
           {
-            "id": "6937664f9aaff605",
+            "id": "3a4f4a276f98e6f9",
             "type": "leaf",
             "state": {
               "type": "kanban",
@@ -169,7 +169,7 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "6937664f9aaff605",
+  "active": "3a4f4a276f98e6f9",
   "lastOpenFiles": [
     "Backlog/Crear XML por cada línea de CSV.md",
     "Kanban.md",

@@ -4,12 +4,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 
 public class AdminPanel {
 
 	private JFrame frame;
 	private JButton btnNewUser;
 	private JButton btnImportCSV;
+	private JScrollPane scrollPane;
+	private JTextArea textAreaXMLContent;
 
 	/**
 	 * Create the application.
@@ -34,6 +38,14 @@ public class AdminPanel {
 		btnImportCSV.setBounds(356, 20, 130, 23);
 		frame.getContentPane().add(btnImportCSV);
 		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 51, 604, 329);
+		frame.getContentPane().add(scrollPane);
+		
+		textAreaXMLContent = new JTextArea();
+		textAreaXMLContent.setEditable(false);
+		scrollPane.setViewportView(textAreaXMLContent);
+		
 		frame.setVisible(true);
 	}
 
@@ -45,7 +57,12 @@ public class AdminPanel {
 		return btnImportCSV;
 	}
 	
+	public JTextArea getTextAreaXMLContent() {
+		return textAreaXMLContent;
+	}
+	
 	public JFrame getFrame() {
 		return frame;
 	}
+
 }

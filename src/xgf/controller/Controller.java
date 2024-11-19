@@ -13,14 +13,22 @@ import java.rmi.AccessException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
+import org.xml.sax.SAXException;
 
 import xgf.model.Database;
 import xgf.model.Model;
 import xgf.model.User;
+import xgf.model.XML;
 import xgf.view.AdminPanel;
 import xgf.view.Login;
 import xgf.view.Register;
@@ -128,6 +136,7 @@ public class Controller {
 				JFileChooser chooser = new JFileChooser();
 				chooser.setCurrentDirectory(new File("."));
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				chooser.setFileFilter(new FileNameExtensionFilter("Archivo CSV", "csv"));
 				
 				if (chooser.showOpenDialog(viewAdmin.getFrame()) == JFileChooser.APPROVE_OPTION) {
 					
@@ -141,29 +150,63 @@ public class Controller {
 							
 							String[] firstLineColumns = reader.readLine().split(";");
 							
-							System.out.println(firstLineColumns);
+							String nextLine = reader.readLine();
+							String[] splitLine;
+							
+							String XMLContent = "";
+							
+							while (nextLine != null) {
+								
+								splitLine = nextLine.split(";");
+								
+								XMLContent = XMLContent.concat(XML.createAndReturnFile(splitLine[0],splitLine,firstLineColumns));
+								XMLContent = XMLContent.concat("\n");
+								
+								nextLine = reader.readLine();
+							}
 							
 							reader.close();
 							
-							Database.removeTable(connection, "population");
-							Database.createTable(connection, "population", firstLineColumns);
+							viewAdmin.getTextAreaXMLContent().setText(XMLContent);
+							
+							insertXMLToTable(firstLineColumns);
 
 						}else {
 						
-							throw new AccessException("No se puede acceder al archivo");
+							throw new AccessException("No se puede acceder al archivo CSV");
 						}
-						
-					}catch (IOException e2) {
-						
-						JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: " + e2.getMessage());
-						
-					} catch (SQLException e1) {
+							
+					} catch (IOException | SQLException | ParserConfigurationException | TransformerException e1) {
 						
 						JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: " + e1.getMessage());
 						
 						e1.printStackTrace();
 					}
 				}
+			}
+
+			private void insertXMLToTable(String[] firstLineColumns) throws SQLException {
+				
+				try {
+					
+					Database.removeTable(connection, "population");
+					Database.createTable(connection, "population", firstLineColumns);
+					
+					List<String> fileValues = new ArrayList<String>();
+					
+					for (File file : XML.getCreatedFiles()) {
+						
+						fileValues = XML.getAttributesAndValues(file);
+						
+						Database.insertPopulation(connection, "population", fileValues);
+					}					
+
+				} catch (SQLException | ParserConfigurationException | SAXException | IOException e) {
+					
+					JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: No ha sido posible insertar XML en base de datos: " + e.getMessage());
+				}
+				
+
 			}
 		});
 		
