@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "86de20ed9473c7b0",
+        "id": "e474139c2d8b001a",
         "type": "tabs",
         "children": [
           {
-            "id": "3bce12e5abdb4414",
+            "id": "036665ee463e35d3",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Dudas.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Dudas"
+              "title": "New tab"
             }
           }
         ]
@@ -163,14 +159,13 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "3bce12e5abdb4414",
+  "active": "036665ee463e35d3",
   "lastOpenFiles": [
-    "Kanban.md",
-    "Dudas.md",
     "Doing/Dudas.md",
+    "Kanban.md",
+    "Backlog/Leer XML creados e insertar en tabla.md",
     "Backlog/Registro de usuarios.md",
     "Backlog/Login de usuarios.md",
-    "Backlog/Leer XML creados e insertar en tabla.md",
     "Backlog/Importar CSV y crear tabla.md",
     "Backlog/Crear XML por cada línea de CSV.md",
     "Done/Base de datos con tabla y admin.md",
