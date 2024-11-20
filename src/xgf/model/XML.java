@@ -107,11 +107,18 @@ public class XML {
 		
 		fileContent.add(xmlRoot.getAttribute("name"));
 		
-		NodeList nodeList = xmlDocument.getElementsByTagName("country");
+		NodeList nodeList = xmlRoot.getChildNodes();
+		
+		Node node;
 		
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			
-			fileContent.add(nodeList.item(i).getTextContent());
+			node = nodeList.item(i);
+			
+			if (node instanceof Element) {
+				
+				fileContent.add(node.getTextContent());
+			}
 		}
 		
 		return fileContent;

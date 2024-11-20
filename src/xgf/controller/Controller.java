@@ -123,7 +123,6 @@ public class Controller {
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				System.out.println("va admin va va");
 				viewRegister = new Register();
 				initRegisterEventHandlers();
 			}
@@ -199,7 +198,9 @@ public class Controller {
 						fileValues = XML.getAttributesAndValues(file);
 						
 						Database.insertPopulation(connection, "population", fileValues);
-					}					
+					}
+					
+					JOptionPane.showMessageDialog(viewLogin.getFrame(), "CSV Importado");
 
 				} catch (SQLException | ParserConfigurationException | SAXException | IOException e) {
 					
@@ -226,33 +227,38 @@ public class Controller {
 				
 				try {
 					
-					// si no hay nada vacío
-					
 					userName = viewRegister.getTextUser().getText();
 					userPassword = viewRegister.getPasswordUser().getPassword();
 					userPasswordRepeated = viewRegister.getPasswordUserRepeat().getPassword();
 					
-					user = new User(userName, userPassword);
+					if (!userName.isEmpty() && !userPassword.equals(null) && !userPasswordRepeated.equals(null)) {
 						
-					if (!(user.getPassword().equals(User.getHash(userPasswordRepeated)))) {
+						user = new User(userName, userPassword);
 						
-						throw new NullPointerException("Las contraseñas no coinciden");
-					}
+						if (!(user.getPassword().equals(User.getHash(userPasswordRepeated)))) {
+
+							throw new NullPointerException("Las contraseñas no coinciden");
+						}
 						
-					if (connection == null) {
+						if (connection == null) {
+
+							throw new NullPointerException("No ha podido conectarse con la base de datos");
+						}
 						
-						throw new NullPointerException("No ha podido conectarse con la base de datos");
-					}
-					
-					if(Database.insertClient(connection, user.getName(), user.getPassword())) {
+						if (Database.setUpClient(connection, user.getName(), user.getPassword(), "population")) {
+
+							JOptionPane.showMessageDialog(viewRegister.getFrame(), "Usuario creado");
+
+							viewRegister.getTextUser().setText("");
+							viewRegister.getPasswordUser().setText("");
+							viewRegister.getPasswordUserRepeat().setText("");
+
+							viewRegister.getFrame().setVisible(false);
+						} 
 						
-						JOptionPane.showMessageDialog(viewRegister.getFrame(), "Usuario creado");
+					}else {
 						
-						viewRegister.getTextUser().setText("");
-						viewRegister.getPasswordUser().setText("");
-						viewRegister.getPasswordUserRepeat().setText("");
-						
-						viewRegister.getFrame().setVisible(false);
+						throw new NullPointerException("No pueden haber campos vacíos");
 					}
 					
 				} catch (NullPointerException | NoSuchAlgorithmException e2) {
@@ -261,7 +267,7 @@ public class Controller {
 					
 				} catch (SQLException e1) {
 
-					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: No ha podido crearse el usuario");
+					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: No ha podido crearse el usuario: " + e1.getMessage());
 				}
 				
 

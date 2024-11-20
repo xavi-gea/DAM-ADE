@@ -6,21 +6,22 @@ kanban-plugin: board
 
 ## Backlog
 
-- [ ] [[Leer XML creados e insertar en tabla]]
 - [ ] Crear cartas para parte de clientes
 
 
 ## Doing
 
+- [ ] [[Login de usuarios]]
 - [ ] [[Registro de usuarios]]
-- [ ] [[Crear XML por cada línea de CSV]]
+- [ ] [[Dudas]] ^3qlhmh
 
 
 ## Done
 
 - [ ] [[Base de datos con tabla y admin]]
-- [ ] [[Login de usuarios]]
 - [ ] [[Importar CSV y crear tabla]]
+- [ ] [[Crear XML por cada línea de CSV]]
+- [ ] [[Leer XML creados e insertar en tabla]]
 
 
 
