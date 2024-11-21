@@ -56,56 +56,59 @@ public class Database {
 	
 	public static boolean setUpClient(Connection connection, String userName, String password, String tableName) throws SQLException {
 		
-		boolean isCreateSuccess = createClient(connection, userName, password);
-		boolean isGrantSuccess = grantClient(connection, userName, tableName);
+		createClient(connection, userName, password);
+		grantClient(connection, userName);
+		boolean isInsertSuccess = insertClient(connection, userName, password);
 		boolean isUpdateSuccess = updateClient(connection, userName);
 		
-		return (isCreateSuccess && isGrantSuccess && isUpdateSuccess) ? true : false;
+		return (isInsertSuccess && isUpdateSuccess) ? true : false;
 	}
 
-	private static boolean createClient(Connection connection, String userName, String password) throws SQLException {
+	private static void createClient(Connection connection, String userName, String password) throws SQLException {
 		
-		boolean isSuccess = false;
+		Statement createStatement = connection.createStatement();
 		
-		PreparedStatement psCreate = connection.prepareStatement("CREATE USER ?@localhost IDENTIFIED BY ?");
-		psCreate.setString(1, userName);
-		psCreate.setString(2, password);
+		String statement = String.format("CREATE USER '%s' IDENTIFIED BY '%s'", userName, password);
+
+		createStatement.execute(statement);
 		
-		int result = psCreate.executeUpdate();
-		
-		System.out.println("result: " + result);
-		
-		if (result > 0) {
-			
-			isSuccess = true;
-		}
-		
-		psCreate.close();
-		
-		System.out.println("create: " + isSuccess);
-		
-		return isSuccess;
+		createStatement.close();
 	}
 	
-	private static boolean grantClient(Connection connection, String userName, String tableName) throws SQLException {
+	private static void grantClient(Connection connection, String userName) throws SQLException {
+				
+		Statement grantStatement = connection.createStatement();
+		
+		String statement = String.format("GRANT SELECT ON population.population TO '%s'", userName);
+		
+		grantStatement.executeUpdate(statement);
+		
+		grantStatement.close();
+	}
+
+
+	private static boolean insertClient(Connection connection, String userName, String password) throws SQLException {
 		
 		boolean isSuccess = false;
 		
-		PreparedStatement psGrant = connection.prepareStatement("GRANT SELECT ON population.population TO ?");
-		psGrant.setString(1, userName);
+		PreparedStatement psInsert = connection.prepareStatement("INSERT INTO users ("
+				+ "login, "
+				+ "password, "
+				+ "type"
+				+ ") VALUES (?, ?, ?)");
 		
-		int result = psGrant.executeUpdate();
+		psInsert.setString(1, userName);
+		psInsert.setString(2, password);
+		psInsert.setString(3, "client");
 		
-		System.out.println("result: " + result);
+		int result = psInsert.executeUpdate();
 		
 		if (result > 0) {
 			
 			isSuccess = true;
 		}
 		
-		psGrant.close();
-		
-		System.out.println("grant: " + isSuccess);
+		psInsert.close();
 		
 		return isSuccess;
 	}
@@ -120,16 +123,12 @@ public class Database {
 		
 		int result = psUpdate.executeUpdate();
 		
-		System.out.println("result: " + result);
-		
 		if (result > 0) {
 			
 			isSuccess = true;
 		}
 		
 		psUpdate.close();
-		
-		System.out.println("update: " + isSuccess);
 		
 		return isSuccess;
 	}
@@ -138,7 +137,7 @@ public class Database {
 		
 		Statement dropStatement = connection.createStatement();
 
-		dropStatement.executeUpdate(String.format("DROP TABLE IF EXISTS %s", tableName));
+		dropStatement.execute(String.format("DROP TABLE IF EXISTS %s", tableName));
 
 		dropStatement.close();
 	}
@@ -158,7 +157,7 @@ public class Database {
 		
 		statement = statement.concat("PRIMARY KEY (id))");
 		
-		createStatement.executeUpdate(statement);
+		createStatement.execute(statement);
 		
 		createStatement.close();
 	}

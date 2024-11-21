@@ -11,9 +11,6 @@ kanban-plugin: board
 
 ## Doing
 
-- [ ] [[Login de usuarios]]
-- [ ] [[Registro de usuarios]]
-- [ ] [[Dudas]] ^3qlhmh
 
 
 ## Done
@@ -22,6 +19,9 @@ kanban-plugin: board
 - [ ] [[Importar CSV y crear tabla]]
 - [ ] [[Crear XML por cada línea de CSV]]
 - [ ] [[Leer XML creados e insertar en tabla]]
+- [ ] [[Login de usuarios]]
+- [ ] [[Registro de usuarios]]
+- [ ] [[Dudas]] ^3qlhmh
 
 
 

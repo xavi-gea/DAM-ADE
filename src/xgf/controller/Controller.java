@@ -1,13 +1,11 @@
 package xgf.controller;
 
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.rmi.AccessException;
 import java.security.NoSuchAlgorithmException;
@@ -18,7 +16,6 @@ import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -41,6 +38,7 @@ public class Controller {
 	
 	private Login viewLogin;
 	private AdminPanel viewAdmin;
+//	private ClientPanel viewClient;
 	private Register viewRegister;
 	
 	Connection connection;
@@ -74,35 +72,37 @@ public class Controller {
 				
 				try {
 					
-					user = new User(userName,userPassword);
+					userLogin();
 					
-				} catch (NoSuchAlgorithmException e1) {
-					
-					JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: No se ha podido iniciar sesión");
-					
-					// TODO Auto-generated catch block
-					//e1.printStackTrace();
-				}
-				
-				Database database = new Database("population");
-				
-				try {
-					
-					connection = database.connectToDatabase(user.getName(), user.getPassword());
-					
-					user.setType(database.getUserType(connection,user.getName()));
-					
-					//connection.close();
-					
-					viewLogin.getFrame().setVisible(false);
-					
-				} catch (SQLException | ClassNotFoundException e1) {
+				} catch (SQLException | ClassNotFoundException | NoSuchAlgorithmException e1) {
 					
 					JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: Usuario o contraseña incorrectos: " + e1.getMessage());
 				}
 				
 				viewLogin.getTextUser().setText("");
 				viewLogin.getPasswordUser().setText("");
+			}
+
+			private void userLogin() throws NoSuchAlgorithmException, SQLException, ClassNotFoundException {
+				
+				user = new User(userName,userPassword);
+				
+				Database database = new Database("population");
+				
+				connection = database.connectToDatabase(user.getName(), user.getPassword());
+				
+				try {
+					
+					user.setType(database.getUserType(connection,user.getName()));
+					
+				} catch (SQLException e1) {
+					
+					user.setType("client");
+				}
+				
+				//connection.close();
+				
+				viewLogin.getFrame().setVisible(false);
 				
 				if (user.getType().equals("admin")) {
 					
@@ -110,6 +110,9 @@ public class Controller {
 					initAdminEventHandlers();
 					
 				}else if(user.getType().equals("client")) {
+					
+//					viewClient = new ClientPanel();
+//					initClientEventHandlers();
 					
 					System.out.println("Pasa a ClientPanel");
 				}
@@ -143,44 +146,48 @@ public class Controller {
 					
 					try {
 						
-						if (Files.isReadable(chosenFile.toPath())) {
-							
-							BufferedReader reader = Files.newBufferedReader(chosenFile.toPath(), StandardCharsets.ISO_8859_1);
-							
-							String[] firstLineColumns = reader.readLine().split(";");
-							
-							String nextLine = reader.readLine();
-							String[] splitLine;
-							
-							String XMLContent = "";
-							
-							while (nextLine != null) {
-								
-								splitLine = nextLine.split(";");
-								
-								XMLContent = XMLContent.concat(XML.createAndReturnFile(splitLine[0],splitLine,firstLineColumns));
-								XMLContent = XMLContent.concat("\n");
-								
-								nextLine = reader.readLine();
-							}
-							
-							reader.close();
-							
-							viewAdmin.getTextAreaXMLContent().setText(XMLContent);
-							
-							insertXMLToTable(firstLineColumns);
-
-						}else {
-						
-							throw new AccessException("No se puede acceder al archivo CSV");
-						}
+						processCSV(chosenFile);
 							
 					} catch (IOException | SQLException | ParserConfigurationException | TransformerException e1) {
 						
-						JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: " + e1.getMessage());
-						
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error al procesar CSV: " + e1.getMessage());
 					}
+				}
+			}
+
+			private void processCSV(File chosenFile) throws IOException, ParserConfigurationException,
+					TransformerException, SQLException, AccessException {
+				
+				if (Files.isReadable(chosenFile.toPath())) {
+					
+					BufferedReader reader = Files.newBufferedReader(chosenFile.toPath(), StandardCharsets.ISO_8859_1);
+					
+					String[] firstLineColumns = reader.readLine().split(";");
+					
+					String nextLine = reader.readLine();
+					String[] splitLine;
+					
+					String XMLContent = "";
+					
+					while (nextLine != null) {
+						
+						splitLine = nextLine.split(";");
+						
+						XMLContent = XMLContent.concat(XML.createAndReturnFile(splitLine[0],splitLine,firstLineColumns));
+						XMLContent = XMLContent.concat("\n");
+						
+						nextLine = reader.readLine();
+					}
+					
+					reader.close();
+					
+					viewAdmin.getTextAreaXMLContent().setText(XMLContent);
+					
+					insertXMLToTable(firstLineColumns);
+
+				}else {
+				
+					throw new AccessException("No se puede acceder al archivo CSV");
 				}
 			}
 

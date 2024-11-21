@@ -4,17 +4,27 @@
     "type": "split",
     "children": [
       {
-        "id": "e474139c2d8b001a",
+        "id": "08c91a3b15273c75",
         "type": "tabs",
         "children": [
           {
-            "id": "036665ee463e35d3",
+            "id": "1b7d5f3bbccb32f6",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
+              "type": "kanban",
+              "state": {
+                "file": "Kanban.md",
+                "kanbanViewState": {
+                  "kanban-plugin": "board",
+                  "list-collapse": [
+                    false,
+                    false,
+                    false
+                  ]
+                }
+              },
+              "icon": "lucide-trello",
+              "title": "Kanban"
             }
           }
         ]
@@ -159,16 +169,16 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "036665ee463e35d3",
+  "active": "1b7d5f3bbccb32f6",
   "lastOpenFiles": [
     "Doing/Dudas.md",
     "Kanban.md",
+    "Done/Base de datos con tabla y admin.md",
     "Backlog/Leer XML creados e insertar en tabla.md",
     "Backlog/Registro de usuarios.md",
     "Backlog/Login de usuarios.md",
     "Backlog/Importar CSV y crear tabla.md",
     "Backlog/Crear XML por cada línea de CSV.md",
-    "Done/Base de datos con tabla y admin.md",
     "Done",
     "Doing",
     "Backlog",
