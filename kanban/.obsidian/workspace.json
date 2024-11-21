@@ -4,27 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "08c91a3b15273c75",
+        "id": "9563ea4ed62a56da",
         "type": "tabs",
         "children": [
           {
-            "id": "1b7d5f3bbccb32f6",
+            "id": "5728a011c4213bca",
             "type": "leaf",
             "state": {
-              "type": "kanban",
-              "state": {
-                "file": "Kanban.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false
-                  ]
-                }
-              },
-              "icon": "lucide-trello",
-              "title": "Kanban"
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ]
@@ -169,16 +159,18 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "1b7d5f3bbccb32f6",
+  "active": "5728a011c4213bca",
   "lastOpenFiles": [
-    "Doing/Dudas.md",
+    "Cards/Base de datos con tabla y admin.md",
     "Kanban.md",
-    "Done/Base de datos con tabla y admin.md",
-    "Backlog/Leer XML creados e insertar en tabla.md",
-    "Backlog/Registro de usuarios.md",
-    "Backlog/Login de usuarios.md",
-    "Backlog/Importar CSV y crear tabla.md",
-    "Backlog/Crear XML por cada línea de CSV.md",
+    "Cards",
+    "Cards/Crear XML por cada línea de CSV.md",
+    "Cards/Consulta SELECT personalizada.md",
+    "Cards/Dudas.md",
+    "Cards/Leer XML creados e insertar en tabla.md",
+    "Cards/Registro de usuarios.md",
+    "Cards/Login de usuarios.md",
+    "Cards/Importar CSV y crear tabla.md",
     "Done",
     "Doing",
     "Backlog",

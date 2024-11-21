@@ -218,11 +218,25 @@ public class Controller {
 			}
 		});
 		
+		viewAdmin.getBtnNewQuery().addActionListener(new ActionListener() {
 		
-		
-		
-		
-		
+			public void actionPerformed(ActionEvent e) {
+				
+				/*
+				 * if Database.isvalidQuery(query,user.getype)
+				 * 
+				 * inside validquery:
+				 * 		if contains select: ok
+				 * 		if table is users and table == user = NOT ok
+				 * 			
+				 * else
+				 * 		query not valid
+				 * 
+				 * */
+				
+				// table = Database.customSelect(query)
+			}
+		});
 		
 	}
 	

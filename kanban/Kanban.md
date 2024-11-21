@@ -11,6 +11,7 @@ kanban-plugin: board
 
 ## Doing
 
+- [ ] [[Consulta SELECT personalizada]]
 
 
 ## Done
