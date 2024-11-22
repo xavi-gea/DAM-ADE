@@ -4,13 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 
 public class Database {
 
 	private String name;
+	private static String[] currentQueryHeader;
+	private static String[][] currentQueryRows;
 	
 	public Database(String name) {
 		super();
@@ -24,15 +28,6 @@ public class Database {
 		
 		return DriverManager.getConnection("jdbc:mysql://localhost:3306/" + name, userName, userPassword);
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 
 	public String getUserType(Connection connection, String userName) throws SQLException {
 		
@@ -54,6 +49,27 @@ public class Database {
 		return type;
 	}
 	
+	public static boolean isValidQuery(String query, String userType) {
+
+		if (!query.contains("SELECT") || !query.contains("FROM")) {
+			
+			return false;
+		}
+		
+		if (query.contains("USERS") && userType.equals("client")) {
+			
+			return false;
+		}
+		
+		if (!query.contains("USERS") && !query.contains("POPULATION")) {
+			
+			return false;
+		}
+		
+		return true;
+	}
+
+
 	public static boolean setUpClient(Connection connection, String userName, String password, String tableName) throws SQLException {
 		
 		createClient(connection, userName, password);
@@ -195,5 +211,86 @@ public class Database {
 		
 	}
 
+	public static String[][] customSelect(Connection connection, String statement) throws SQLException {
+		
+		Statement customSelectStatement = connection.createStatement(
+				ResultSet.TYPE_SCROLL_INSENSITIVE, 
+				ResultSet.CONCUR_READ_ONLY);
+		
+		ResultSet result = customSelectStatement.executeQuery(statement);
+		
+		ResultSetMetaData metadata = result.getMetaData();
+		
+		int numberOfColumns = metadata.getColumnCount();
+		
+		String[][] queryRows = getColumnNames(result, metadata);
+		
+		int currentRow = 1;
+	
+		while (result.next()) {
+			
+			for (int i = 0; i < numberOfColumns; i++) {
+				
+				queryRows[currentRow][i] = result.getString(i + 1);
+			}
+			
+			currentRow++;
+		}
+		
+		customSelectStatement.close();
+		
+		currentQueryHeader = queryRows[0];
+		currentQueryRows = Arrays.copyOfRange(queryRows, 1, queryRows.length);
+		
+		return queryRows;
+	}
 
+	private static String[][] getColumnNames(ResultSet result, ResultSetMetaData metadata) throws SQLException {
+
+		String[][] columnNames = new String[getNumberOfRows(result) + 1][metadata.getColumnCount()];
+		
+		for (int i = 0; i < metadata.getColumnCount(); i++) {
+			
+			columnNames[0][i] = metadata.getColumnName(i + 1);
+		}
+		
+		return columnNames;
+	}
+
+	private static int getNumberOfRows(ResultSet result) throws SQLException {
+			
+		int rows = 0;
+			
+		result.last();
+		
+		rows = result.getRow();
+		
+		result.beforeFirst();
+		
+		return rows;
+	}
+	
+	public static void emptyCurrentQuery() {
+		
+		currentQueryHeader = null;
+		currentQueryRows = null;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public static String[] getCurrentQueryHeader() {
+		return currentQueryHeader;
+	}
+
+	public static String[][] getCurrentQueryRows() {
+		return currentQueryRows;
+	}
 }

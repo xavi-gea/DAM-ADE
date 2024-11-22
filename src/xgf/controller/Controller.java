@@ -12,11 +12,14 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -222,19 +225,35 @@ public class Controller {
 		
 			public void actionPerformed(ActionEvent e) {
 				
-				/*
-				 * if Database.isvalidQuery(query,user.getype)
-				 * 
-				 * inside validquery:
-				 * 		if contains select: ok
-				 * 		if table is users and table == user = NOT ok
-				 * 			
-				 * else
-				 * 		query not valid
-				 * 
-				 * */
+				// extraer y pasar a lo extraido la view viewadmin o viewUser
 				
-				// table = Database.customSelect(query)
+				String customQuery = viewAdmin.getTextNewQuery().getText().toUpperCase();
+				
+				if (Database.isValidQuery(customQuery,user.getType())) {
+					
+					try {
+						
+						Database.customSelect(connection,customQuery);
+
+						DefaultTableModel tableModel = new DefaultTableModel(Database.getCurrentQueryRows(), Database.getCurrentQueryHeader());
+						
+//						Database.emptyCurrentQuery();
+						
+						viewAdmin.getTableQueryResult().setModel(tableModel);
+						
+					} catch (SQLException e1) {
+						
+						Database.emptyCurrentQuery();
+						
+						JOptionPane.showMessageDialog(viewAdmin.getFrame(), "Error: No han podido mostrarse las filas. ¿Has comprobado lo que estás buscando? ");
+					}
+					
+				}else {
+					
+					Database.emptyCurrentQuery();
+					
+					JOptionPane.showMessageDialog(viewAdmin.getFrame(), "Error: El formato de la consulta no es válido");
+				}
 			}
 		});
 		

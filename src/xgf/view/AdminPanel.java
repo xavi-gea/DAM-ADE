@@ -19,6 +19,7 @@ public class AdminPanel {
 	private JTextField textNewQuery;
 	private JButton btnNewQuery;
 	private JTable tableQueryResult;
+	private JScrollPane scrollPane_1;
 
 	/**
 	 * Create the application.
@@ -64,11 +65,12 @@ public class AdminPanel {
 		btnNewQuery.setBounds(496, 300, 118, 23);
 		frame.getContentPane().add(btnNewQuery);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 329, 604, 145);
+		scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(10, 331, 604, 143);
 		frame.getContentPane().add(scrollPane_1);
 		
 		tableQueryResult = new JTable();
+		tableQueryResult.setEnabled(false);
 		scrollPane_1.setViewportView(tableQueryResult);
 		
 		frame.setVisible(true);

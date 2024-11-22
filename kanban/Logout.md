@@ -1,0 +1,1 @@
+Finalmente, debes incluir una funcionalidad de “logout” para que en cualquier momento se pueda cerrar la conexión a la base de datos. Por lo tanto, una vez hecho “logout”, no se puede utilizar ninguna funcionalidad hasta que se vuelva a hacer “login”.

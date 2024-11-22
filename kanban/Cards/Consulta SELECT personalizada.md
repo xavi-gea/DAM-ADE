@@ -3,3 +3,5 @@ La aplicación debe permitir introducir una consulta de tipo SELECT libre, para 
 Una vez realizada la consulta SELECT, debes mostrar lo que devuelve en un componente de la interfaz gráfica.
 
 Puedes investigar diferentes componentes además del típico JTextArea para que la información se muestre de una manera más amigable.
+
+https://stackoverflow.com/questions/15517736/iterating-over-resultset-and-adding-its-value-in-an-arraylist
