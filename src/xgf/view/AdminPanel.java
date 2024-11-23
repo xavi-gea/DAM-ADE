@@ -9,6 +9,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 
+/**
+ * @author Xavi
+ */
 public class AdminPanel implements ViewType {
 
 	private JFrame frame;

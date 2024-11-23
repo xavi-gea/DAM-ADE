@@ -10,6 +10,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+/**
+ * @author Xavi
+ */
 public class Register {
 
 	private JFrame frame;
@@ -72,19 +75,25 @@ public class Register {
 		
 		frame.setVisible(true);
 	}
+	
 	public JTextField getTextUser() {
 		return textUser;
 	}
+	
 	public JPasswordField getPasswordUser() {
 		return passwordUser;
 	}
+	
 	public JButton getBtnRegister() {
 		return btnRegister;
 	}
+	
 	public JPasswordField getPasswordUserRepeat() {
 		return passwordUserRepeat;
 	}
+	
 	public JFrame getFrame() {
 		return frame;
 	}
+	
 }

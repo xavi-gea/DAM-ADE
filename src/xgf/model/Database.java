@@ -10,6 +10,9 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author Xavi
+ */
 public class Database {
 
 	private String name;
@@ -21,6 +24,14 @@ public class Database {
 		this.name = name;
 	}
 	
+	/**
+	 * Tries to connect to the database used by the application 
+	 * @param userName Name of the user that is trying to log-in
+	 * @param userPassword Password of the user that is trying to log-in
+	 * @return If successful, the connection to the database 
+	 * @throws SQLException When a connection to the database is not able to be made
+	 * @throws ClassNotFoundException When the specified driver is not found 
+	 */
 	public Connection connectToDatabase(String userName, String userPassword) throws SQLException, ClassNotFoundException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -28,9 +39,16 @@ public class Database {
 		return DriverManager.getConnection("jdbc:mysql://localhost:3306/" + name, userName, userPassword);
 	}
 
+	/**
+	 * Executes a select statement to obtain the type of the provided userName
+	 * @param connection Connection to be used for the SELECT statement
+	 * @param userName Name of the target user
+	 * @return Return the type of the provided user
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
 	public String getUserType(Connection connection, String userName) throws SQLException {
 		
-		String type = "";
+		String type = "client";
 		
 		PreparedStatement psSelect = connection.prepareStatement("SELECT type FROM users WHERE login = ?");
 		psSelect.setString(1, userName);
@@ -48,7 +66,12 @@ public class Database {
 		return type;
 	}
 	
-	public static boolean isValidQuery(String query, String userType) {
+	/**
+	 * Checks if the provided query is valid
+	 * @param query Query to be checked
+	 * @return Boolean with the results of the check
+	 */
+	public static boolean isValidQuery(String query) {
 
 		if (!query.contains("SELECT") || !query.contains("FROM")) {
 			
@@ -58,8 +81,15 @@ public class Database {
 		return true;
 	}
 
-
-	public static boolean setUpClient(Connection connection, String userName, String password, String tableName) throws SQLException {
+	/**
+	 * Calls the relevant methods to create, grant, insert and update a new user
+	 * @param connection Connection to be used for the create statement
+	 * @param userName Name of the new user
+	 * @param password Password of the new user
+	 * @return Boolean with the result of the methods that can have a return
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
+	public static boolean setUpClient(Connection connection, String userName, String password) throws SQLException {
 		
 		createClient(connection, userName, password);
 		grantClient(connection, userName);
@@ -69,6 +99,13 @@ public class Database {
 		return (isInsertSuccess && isUpdateSuccess) ? true : false;
 	}
 
+	/**
+	 * Tries to create a user that will be able to interact with the database
+	 * @param connection Connection to be used for the create statement
+	 * @param userName Name of the new user
+	 * @param password Password of the new user
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
 	private static void createClient(Connection connection, String userName, String password) throws SQLException {
 		
 		Statement createStatement = connection.createStatement();
@@ -80,6 +117,12 @@ public class Database {
 		createStatement.close();
 	}
 	
+	/**
+	 * Tries to grant privileges to the provided user 
+	 * @param connection Connection to be used for the grant
+	 * @param userName Name of the target user
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
 	private static void grantClient(Connection connection, String userName) throws SQLException {
 				
 		Statement grantStatement = connection.createStatement();
@@ -91,7 +134,14 @@ public class Database {
 		grantStatement.close();
 	}
 
-
+	/**
+	 * Tries to insert a new user in the USERS table
+	 * @param connection Connection to be used for the insert
+	 * @param userName Name of the user to be inserted
+	 * @param password Password of the user to be inserted
+	 * @return Boolean with the insert result
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
 	private static boolean insertClient(Connection connection, String userName, String password) throws SQLException {
 		
 		boolean isSuccess = false;
@@ -119,6 +169,13 @@ public class Database {
 	}
 
 
+	/**
+	 * Updates the type of user that resides in the USERS table
+	 * @param connection Connection to be used for the update
+	 * @param userName Name of the targeted user
+	 * @return Boolean with the update result
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
 	private static boolean updateClient(Connection connection, String userName) throws SQLException {
 		
 		boolean isSuccess = false;
@@ -138,6 +195,12 @@ public class Database {
 		return isSuccess;
 	}
 	
+	/**
+	 * Tries to remove a table with the provided name
+	 * @param connection Connection to be used for the drop statement
+	 * @param tableName Name of the targeted table
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
 	public static void removeTable (Connection connection, String tableName) throws SQLException {
 		
 		Statement dropStatement = connection.createStatement();
@@ -147,6 +210,13 @@ public class Database {
 		dropStatement.close();
 	}
 	
+	/**
+	 * Tries to create a table with the provided name and columns
+	 * @param connection Connection to be used for the create statement
+	 * @param tableName Name of the new table
+	 * @param tableColumns Columns of the new table
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
 	public static void createTable(Connection connection, String tableName, String[] tableColumns) throws SQLException {
 		
 		Statement createStatement = connection.createStatement();
@@ -167,7 +237,14 @@ public class Database {
 		createStatement.close();
 	}
 
-	public static boolean insertPopulation(Connection connection, String string, List<String> fileValues) throws SQLException {
+	/**
+	 * Execute an insert statement and return it's successfulness
+	 * @param connection Connection to be used for the insert
+	 * @param fileValues Values to be inserted
+	 * @return Boolean with the insert result
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
+	public static boolean insertPopulation(Connection connection, List<String> fileValues) throws SQLException {
 		
 		boolean isSuccess = false;
 		
@@ -197,9 +274,16 @@ public class Database {
 		psInsert.close();
 		
 		return isSuccess;
-		
 	}
 
+	/**
+	 * Given the provided statement, connect to the database and execute a query returning 
+	 * the results in a matrix
+	 * @param connection Connection to be used for the query
+	 * @param statement
+	 * @return Matrix with the contents of the query
+	 * @throws SQLException When Connection cannot be interacted with
+	 */
 	public static String[][] customSelect(Connection connection, String statement) throws SQLException {
 		
 		Statement customSelectStatement = connection.createStatement(
@@ -234,6 +318,14 @@ public class Database {
 		return queryRows;
 	}
 
+	/**
+	 * Given the provided ResultSet and ResultSetMetaData, construct a matrix with the column 
+	 * names already present
+	 * @param result Source used to obtain the total number of rows
+	 * @param metadata Source used to obtain the name of the columns
+	 * @return String[][] Array to be used for query data storage
+	 * @throws SQLException When ResultSet or ResultSetMetaData cannot be interacted with
+	 */
 	private static String[][] getColumnNames(ResultSet result, ResultSetMetaData metadata) throws SQLException {
 
 		String[][] columnNames = new String[getNumberOfRows(result) + 1][metadata.getColumnCount()];
@@ -246,6 +338,12 @@ public class Database {
 		return columnNames;
 	}
 
+	/**
+	 * Get number of rows from the given ResultSet
+	 * @param result Source used to obtain the number of rows
+	 * @return integer Total number of rows
+	 * @throws SQLException When ResultSet cannot be interacted with
+	 */
 	private static int getNumberOfRows(ResultSet result) throws SQLException {
 			
 		int rows = 0;
@@ -259,6 +357,9 @@ public class Database {
 		return rows;
 	}
 	
+	/**
+	 * Sets static variables currentQueryHeader and currentQueryRows to null
+	 */
 	public static void emptyCurrentQuery() {
 		
 		currentQueryHeader = null;

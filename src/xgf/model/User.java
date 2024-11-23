@@ -4,6 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * @author Xavi
+ */
 public class User {
 	
 	private String name;
@@ -11,6 +14,13 @@ public class User {
 	
 	private String type;
 
+	/**
+	 * Instantiates a User with the userName provided and converts userPassword to 
+	 * a hash before assigning it
+	 * @param userName User name to be used 
+	 * @param userPassword Password to be converted and used
+	 * @throws NoSuchAlgorithmException When the specified algorithm cannot be found
+	 */
 	public User(String userName, char[] userPassword) throws NoSuchAlgorithmException {
 		
 		this.name = userName;
@@ -18,6 +28,12 @@ public class User {
 		this.type = "";
 	}
 	
+	/**
+	 * From the provided password, return a generated hash in MD5 algorithm
+	 * @param password Password to be converted
+	 * @return Hashed password
+	 * @throws NoSuchAlgorithmException When the specified algorithm cannot be found
+	 */
 	public static String getHash(char[] password) throws NoSuchAlgorithmException {
 		
 		byte[] passwordInBytes = String.valueOf(password).getBytes(StandardCharsets.UTF_8);
@@ -29,12 +45,15 @@ public class User {
 		return getStringFromBytes(hashBytes);
 	}
 
+	/**
+	 * Formats each byte from hashBytes as an Hexadecimal integer with a minimum of 2 digits.
+	 * If needed to achieve 2 digits, precede it with 0
+	 * @param hashBytes Array that contains the bytes to be formatted
+	 * @return String with each byte formatted to it's Hexadecimal integer equivalent
+	 */
 	private static String getStringFromBytes(byte[] hashBytes) {
 		
 		String result = "";
-		
-		// Format each byte as Hexadecimal integer with a minimum of 2 digits.
-		// If needed to achieve 2 digits, precede it with 0
 		
 		for (byte b : hashBytes) {
 			

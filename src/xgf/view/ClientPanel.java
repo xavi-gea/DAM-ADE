@@ -9,6 +9,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+/**
+ * @author Xavi
+ */
 public class ClientPanel implements ViewType {
 
 	private JFrame frame;

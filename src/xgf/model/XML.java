@@ -25,10 +25,23 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * @author Xavi
+ */
 public class XML {
 	
 	private static Path workPath = Paths.get("." + File.separator + "xml");
 
+	/**
+	 * Create and XML File in the workPath and return it's content
+	 * @param fileName Name of the XML File
+	 * @param lineValues Values that it will have
+	 * @param tags Tags that will contain the values
+	 * @return Content of the XML
+	 * @throws IOException When the directory with the XML cannot be created
+	 * @throws ParserConfigurationException When the XML file cannot be instantiated
+	 * @throws TransformerException When the XML generated cannot be transformed into a File or String
+	 */
 	public static String createAndReturnFile(String fileName, String[] lineValues, String[] tags) throws IOException, ParserConfigurationException, TransformerException {
 		
 		if (Files.notExists(workPath)) {
@@ -75,6 +88,10 @@ public class XML {
 		return outputString.toString();
 	}
 
+	/**
+	 * Return every XML file found in the previously specified workPath
+	 * @return
+	 */
 	public static List<File> getCreatedFiles() {
 		
 		List<File> foundFiles = new ArrayList<File>();
@@ -91,9 +108,16 @@ public class XML {
 		}
 		
 		return foundFiles;
-		
 	}
 
+	/**
+	 * From the provided XML File, return it's content
+	 * @param file File to get it's content
+	 * @return Content found inside the File parameter
+	 * @throws ParserConfigurationException
+	 * @throws SAXException When the contents of the file cannot be parsed
+	 * @throws IOException When the file cannot be read
+	 */
 	public static List<String> getAttributesAndValues(File file) throws ParserConfigurationException, SAXException, IOException {
 		
 		List<String> fileContent = new ArrayList<String>();

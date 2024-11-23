@@ -9,6 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 
+/**
+ * @author Xavi
+ */
 public class Login {
 
 	private JFrame frame;
@@ -62,15 +65,19 @@ public class Login {
 		
 		frame.setVisible(true);
 	}
+	
 	public JTextField getTextUser() {
 		return textUser;
 	}
+	
 	public JPasswordField getPasswordUser() {
 		return passwordUser;
 	}
+	
 	public JButton getBtnLogin() {
 		return btnLogin;
 	}
+	
 	public JFrame getFrame() {
 		return frame;
 	}

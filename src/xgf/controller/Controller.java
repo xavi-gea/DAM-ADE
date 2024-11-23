@@ -1,6 +1,5 @@
 package xgf.controller;
 
-import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -14,12 +13,10 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,42 +24,26 @@ import javax.xml.transform.TransformerException;
 
 import org.xml.sax.SAXException;
 
-import xgf.model.Database;
-import xgf.model.Model;
-import xgf.model.User;
-import xgf.model.XML;
-import xgf.view.AdminPanel;
-import xgf.view.ClientPanel;
-import xgf.view.Login;
-import xgf.view.Register;
-import xgf.view.View;
-import xgf.view.ViewType;
+import xgf.model.*;
+import xgf.view.*;
 
+/**
+ * @author Xavi
+ */
 public class Controller {
-	
-	private View view;
-	private Model model;
 	
 	private Login viewLogin;
 	private AdminPanel viewAdmin;
 	private ClientPanel viewClient;
 	private Register viewRegister;
 	
-	Connection connection;
+	private Connection connection;
 	
-	User user;
+	private User user;
 	
-	String userName;
-	char[] userPassword;
-	char[] userPasswordRepeated;
-	
-	public Controller(View view, Model model) {
-		
-		this.view = view;
-		this.model = model;
+	public Controller() {
 		
 		viewLogin = new Login();
-		
 		initLoginEventHandler();
 	}
 
@@ -70,27 +51,40 @@ public class Controller {
 		
 		viewLogin.getBtnLogin().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to log the user in
+			 */
 			public void actionPerformed(ActionEvent e) {
 				
-				userName = viewLogin.getTextUser().getText();
-				userPassword = viewLogin.getPasswordUser().getPassword();
+				String userName = viewLogin.getTextUser().getText();
+				char[] userPassword = viewLogin.getPasswordUser().getPassword();
 				
 				user = null;
 				
 				try {
 					
-					userLogin();
+					userLogin(userName, userPassword);
 					
 				} catch (SQLException | ClassNotFoundException | NoSuchAlgorithmException e1) {
 					
-					JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: Usuario o contraseña incorrectos: " + e1.getMessage());
+					JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: Usuario o contraseña incorrectos");
 				}
 				
 				viewLogin.getTextUser().setText("");
 				viewLogin.getPasswordUser().setText("");
 			}
 
-			private void userLogin() throws NoSuchAlgorithmException, SQLException, ClassNotFoundException {
+			/**
+			 * Logs the user into the database with the provided userName and password.
+			 * If the login is successful, instantiate the relevant panel and close the Login view
+			 * @param userName User name of the user to do log-in
+			 * @param userPassword Password of the user to do log-in
+			 * @throws NoSuchAlgorithmException When it cannot generate a hash 
+			 * related to the password
+			 * @throws SQLException When a connection to the database is not able to be made
+			 * @throws ClassNotFoundException When the specified driver is not found
+			 */
+			private void userLogin(String userName, char[] userPassword) throws NoSuchAlgorithmException, SQLException, ClassNotFoundException {
 				
 				user = new User(userName,userPassword);
 				
@@ -123,10 +117,18 @@ public class Controller {
 		});
 	}
 
+	/**
+	 * Generates multiple event handlers related to the AdminPanel view
+	 */
 	private void initAdminEventHandlers() {
 		
 		viewAdmin.getBtnImportCSV().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, import a CSV file from a location 
+			 * chosen by the user
+			 * @param e Event executed
+			 */
 			public void actionPerformed(ActionEvent e) {
 				
 				JFileChooser chooser = new JFileChooser();
@@ -142,15 +144,23 @@ public class Controller {
 						
 						processCSV(chosenFile);
 							
-					} catch (IOException | SQLException | ParserConfigurationException | TransformerException e1) {
+					} catch (IOException | ParserConfigurationException | TransformerException e1) {
 						
 						JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error al procesar CSV: " + e1.getMessage());
 					}
 				}
 			}
 
-			private void processCSV(File chosenFile) throws IOException, ParserConfigurationException,
-					TransformerException, SQLException, AccessException {
+			/**
+			 * Generate multiple XML File from the contents of a provided CSV File, 
+			 * populate a JTextArea in the AdminPanel with the same contents and 
+			 * insert everything into the database
+			 * @param chosenFile File with the needed data to generate the XML
+			 * @throws IOException When the contents of the file cannot be accessed
+			 * @throws ParserConfigurationException When the XML file cannot be instantiated
+			 * @throws TransformerException When the XML file cannot be populated
+			 */
+			private void processCSV(File chosenFile) throws IOException, ParserConfigurationException, TransformerException {
 				
 				if (Files.isReadable(chosenFile.toPath())) {
 					
@@ -185,7 +195,11 @@ public class Controller {
 				}
 			}
 
-			private void insertXMLToTable(String[] firstLineColumns) throws SQLException {
+			/**
+			 * Recreates the population table with the contents of the previously created XML
+			 * @param firstLineColumns
+			 */
+			private void insertXMLToTable(String[] firstLineColumns) {
 				
 				try {
 					
@@ -198,20 +212,22 @@ public class Controller {
 						
 						fileValues = XML.getAttributesAndValues(file);
 						
-						Database.insertPopulation(connection, "population", fileValues);
+						Database.insertPopulation(connection, fileValues);
 					}
 					
-					JOptionPane.showMessageDialog(viewLogin.getFrame(), "CSV Importado");
+					JOptionPane.showMessageDialog(viewAdmin.getFrame(), "CSV Importado");
 
 				} catch (SQLException | ParserConfigurationException | SAXException | IOException e) {
 					
-					JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: No ha sido posible insertar XML en base de datos: " + e.getMessage());
+					JOptionPane.showMessageDialog(viewAdmin.getFrame(), "Error: No ha sido posible insertar XML en base de datos: " + e.getMessage());
 				}
-				
-
 			}
 		});
 		
+		/**
+		 * When the specified action is performed, it generates a new Register view 
+		 * with it's event handler
+		 */
 		viewAdmin.getBtnNewUser().addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -221,6 +237,10 @@ public class Controller {
 			}
 		});
 		
+		/**
+		 * When the specified action is performed, it triggers a log-out 
+		 * related to the AdminPanel view 
+		 */
 		viewAdmin.getBtnLogout().addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -229,6 +249,10 @@ public class Controller {
 			}
 		});
 
+		/**
+		 * When the specified action is performed, it triggers a select query 
+		 * related to the AdminPanel view 
+		 */
 		viewAdmin.getBtnNewQuery().addActionListener(new ActionListener() {
 		
 			public void actionPerformed(ActionEvent e) {
@@ -237,6 +261,10 @@ public class Controller {
 			}
 		});
 		
+		/**
+		 * When the specified action is performed, it triggers a CSV export 
+		 * related to the AdminPanel view 
+		 */
 		viewAdmin.getBtnExportCSV().addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -246,10 +274,17 @@ public class Controller {
 		});
 	}
 	
+	/**
+	 * Generates multiple event handlers related to the Client view
+	 */
 	private void initClientEventHandlers() {
 		
 		viewClient.getBtnLogout().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, it triggers a log-out 
+			 * related to the ClientPanel view 
+			 */
 			public void actionPerformed(ActionEvent e) {
 					
 				doLogout(viewClient);
@@ -258,6 +293,10 @@ public class Controller {
 		
 		viewClient.getBtnNewQuery().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, it triggers a select query 
+			 * related to the ClientPanel view 
+			 */
 			public void actionPerformed(ActionEvent e) {
 				
 				getQueryResult(viewClient);
@@ -266,6 +305,10 @@ public class Controller {
 		
 		viewClient.getBtnExportCSV().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, it triggers a CSV export 
+			 * related to the ClientPanel view 
+			 */
 			public void actionPerformed(ActionEvent e) {
 				
 				exportCSV(viewClient);
@@ -273,17 +316,25 @@ public class Controller {
 		});
 	}
 
+	/**
+	 * Generates an event handler related to the Register view
+	 */
 	private void initRegisterEventHandlers() {
 	
 		viewRegister.getBtnRegister().addActionListener(new ActionListener() {
 			
+			/**
+			 * Tries to create a new user if the listener is triggered by 
+			 * using the userName and password that Register contains
+			 * @param e Event executed
+			 */
 			public void actionPerformed(ActionEvent e) {
 				
 				try {
 					
-					userName = viewRegister.getTextUser().getText();
-					userPassword = viewRegister.getPasswordUser().getPassword();
-					userPasswordRepeated = viewRegister.getPasswordUserRepeat().getPassword();
+					String userName = viewRegister.getTextUser().getText();
+					char[] userPassword = viewRegister.getPasswordUser().getPassword();
+					char[] userPasswordRepeated = viewRegister.getPasswordUserRepeat().getPassword();
 					
 					if (!userName.isEmpty() && !userPassword.equals(null) && !userPasswordRepeated.equals(null)) {
 						
@@ -299,7 +350,7 @@ public class Controller {
 							throw new NullPointerException("No ha podido conectarse con la base de datos");
 						}
 						
-						if (Database.setUpClient(connection, user.getName(), user.getPassword(), "population")) {
+						if (Database.setUpClient(connection, user.getName(), user.getPassword())) {
 	
 							JOptionPane.showMessageDialog(viewRegister.getFrame(), "Usuario creado");
 	
@@ -323,14 +374,14 @@ public class Controller {
 	
 					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: No ha podido crearse el usuario: " + e1.getMessage());
 				}
-				
-	
-				
-				
 			}
 		});
 	}
 
+	/**
+	 * Tries to log out of the application by closing the Connection and current view
+	 * @param view Target to close
+	 */
 	private void doLogout(ViewType view) {
 		
 		try {
@@ -345,16 +396,20 @@ public class Controller {
 			
 		} catch (SQLException e) {
 			
-			JOptionPane.showMessageDialog(viewRegister.getFrame(), "No se ha podido cerrar sesión: " + e.getMessage());
+			JOptionPane.showMessageDialog(view.getFrame(), "No se ha podido cerrar sesión: " + e.getMessage());
 		}
 		
 	}
 
+	/**
+	 * Generates a select query and populates a table of the provided ViewType with it's result
+	 * @param view Target ViewType to get the query and table
+	 */
 	private void getQueryResult(ViewType view) {
 		
 		String customQuery = view.getTextNewQuery().getText().toUpperCase();
 		
-		if (Database.isValidQuery(customQuery,user.getType())) {
+		if (Database.isValidQuery(customQuery)) {
 			
 			try {
 				
@@ -379,6 +434,10 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * Generate a CSV file with a location chosen by the user
+	 * @param view Target ViewType to anchor the File chooser and pop ups
+	 */
 	private void exportCSV(ViewType view) {
 
 		if (Database.getCurrentQueryHeader() != null) {
@@ -413,6 +472,13 @@ public class Controller {
 		
 	}
 
+	/**
+	 * If the provided file does not end with the provided extension, 
+	 * add it to the end of it's name
+	 * @param chosenFile Target file to check for it's extension
+	 * @param fileExtension Extension to check for
+	 * @return Return the same or a new File if the extension was not present
+	 */
 	private File getFileWithExtension(File chosenFile, String fileExtension) {
 		
 		String extension = "." + fileExtension;
@@ -425,6 +491,12 @@ public class Controller {
 		return chosenFile;
 	}
 
+	/**
+	 * Tries to populate a specified File with a query previously saved in the Database class
+	 * @param chosenFile Target File to be populated
+	 * @param separator Separator to divide each column inside the File
+	 * @throws IOException When the target File cannot be interacted with
+	 */
 	private void saveCSV(File chosenFile, String separator) throws IOException {
 		
 		BufferedWriter writer = Files.newBufferedWriter(chosenFile.toPath(), StandardCharsets.ISO_8859_1);
