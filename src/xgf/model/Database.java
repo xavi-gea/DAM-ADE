@@ -20,7 +20,6 @@ public class Database {
 		super();
 		this.name = name;
 	}
-
 	
 	public Connection connectToDatabase(String userName, String userPassword) throws SQLException, ClassNotFoundException {
 		
@@ -52,16 +51,6 @@ public class Database {
 	public static boolean isValidQuery(String query, String userType) {
 
 		if (!query.contains("SELECT") || !query.contains("FROM")) {
-			
-			return false;
-		}
-		
-		if (query.contains("USERS") && userType.equals("client")) {
-			
-			return false;
-		}
-		
-		if (!query.contains("USERS") && !query.contains("POPULATION")) {
 			
 			return false;
 		}

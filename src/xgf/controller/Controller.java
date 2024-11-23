@@ -1,8 +1,10 @@
 package xgf.controller;
 
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,9 +32,11 @@ import xgf.model.Model;
 import xgf.model.User;
 import xgf.model.XML;
 import xgf.view.AdminPanel;
+import xgf.view.ClientPanel;
 import xgf.view.Login;
 import xgf.view.Register;
 import xgf.view.View;
+import xgf.view.ViewType;
 
 public class Controller {
 	
@@ -41,7 +45,7 @@ public class Controller {
 	
 	private Login viewLogin;
 	private AdminPanel viewAdmin;
-//	private ClientPanel viewClient;
+	private ClientPanel viewClient;
 	private Register viewRegister;
 	
 	Connection connection;
@@ -103,10 +107,6 @@ public class Controller {
 					user.setType("client");
 				}
 				
-				//connection.close();
-				
-				viewLogin.getFrame().setVisible(false);
-				
 				if (user.getType().equals("admin")) {
 					
 					viewAdmin = new AdminPanel();
@@ -114,25 +114,16 @@ public class Controller {
 					
 				}else if(user.getType().equals("client")) {
 					
-//					viewClient = new ClientPanel();
-//					initClientEventHandlers();
-					
-					System.out.println("Pasa a ClientPanel");
+					viewClient = new ClientPanel();
+					initClientEventHandlers();
 				}
+				
+				viewLogin.getFrame().setVisible(false);
 			}
 		});
 	}
 
 	private void initAdminEventHandlers() {
-		
-		viewAdmin.getBtnNewUser().addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-				
-				viewRegister = new Register();
-				initRegisterEventHandlers();
-			}
-		});
 		
 		viewAdmin.getBtnImportCSV().addActionListener(new ActionListener() {
 			
@@ -221,46 +212,69 @@ public class Controller {
 			}
 		});
 		
+		viewAdmin.getBtnNewUser().addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				viewRegister = new Register();
+				initRegisterEventHandlers();
+			}
+		});
+		
+		viewAdmin.getBtnLogout().addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+					
+				doLogout(viewAdmin);
+			}
+		});
+
 		viewAdmin.getBtnNewQuery().addActionListener(new ActionListener() {
 		
 			public void actionPerformed(ActionEvent e) {
 				
-				// extraer y pasar a lo extraido la view viewadmin o viewUser
-				
-				String customQuery = viewAdmin.getTextNewQuery().getText().toUpperCase();
-				
-				if (Database.isValidQuery(customQuery,user.getType())) {
-					
-					try {
-						
-						Database.customSelect(connection,customQuery);
-
-						DefaultTableModel tableModel = new DefaultTableModel(Database.getCurrentQueryRows(), Database.getCurrentQueryHeader());
-						
-//						Database.emptyCurrentQuery();
-						
-						viewAdmin.getTableQueryResult().setModel(tableModel);
-						
-					} catch (SQLException e1) {
-						
-						Database.emptyCurrentQuery();
-						
-						JOptionPane.showMessageDialog(viewAdmin.getFrame(), "Error: No han podido mostrarse las filas. ¿Has comprobado lo que estás buscando? ");
-					}
-					
-				}else {
-					
-					Database.emptyCurrentQuery();
-					
-					JOptionPane.showMessageDialog(viewAdmin.getFrame(), "Error: El formato de la consulta no es válido");
-				}
+				getQueryResult(viewAdmin);
 			}
 		});
 		
+		viewAdmin.getBtnExportCSV().addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				exportCSV(viewAdmin);
+			}
+		});
 	}
 	
-	private void initRegisterEventHandlers() {
+	private void initClientEventHandlers() {
+		
+		viewClient.getBtnLogout().addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+					
+				doLogout(viewClient);
+			}
+		});
+		
+		viewClient.getBtnNewQuery().addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				getQueryResult(viewClient);
+			}
+		});
+		
+		viewClient.getBtnExportCSV().addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				exportCSV(viewClient);
+			}
+		});
+	}
 
+	private void initRegisterEventHandlers() {
+	
 		viewRegister.getBtnRegister().addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -276,23 +290,23 @@ public class Controller {
 						user = new User(userName, userPassword);
 						
 						if (!(user.getPassword().equals(User.getHash(userPasswordRepeated)))) {
-
+	
 							throw new NullPointerException("Las contraseñas no coinciden");
 						}
 						
 						if (connection == null) {
-
+	
 							throw new NullPointerException("No ha podido conectarse con la base de datos");
 						}
 						
 						if (Database.setUpClient(connection, user.getName(), user.getPassword(), "population")) {
-
+	
 							JOptionPane.showMessageDialog(viewRegister.getFrame(), "Usuario creado");
-
+	
 							viewRegister.getTextUser().setText("");
 							viewRegister.getPasswordUser().setText("");
 							viewRegister.getPasswordUserRepeat().setText("");
-
+	
 							viewRegister.getFrame().setVisible(false);
 						} 
 						
@@ -306,14 +320,127 @@ public class Controller {
 					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: " + e2.getMessage());
 					
 				} catch (SQLException e1) {
-
+	
 					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: No ha podido crearse el usuario: " + e1.getMessage());
 				}
 				
-
+	
 				
 				
 			}
 		});
+	}
+
+	private void doLogout(ViewType view) {
+		
+		try {
+			
+			connection.close();
+			Database.emptyCurrentQuery();
+			
+			viewLogin = new Login();
+			initLoginEventHandler();
+			
+			view.getFrame().setVisible(false);
+			
+		} catch (SQLException e) {
+			
+			JOptionPane.showMessageDialog(viewRegister.getFrame(), "No se ha podido cerrar sesión: " + e.getMessage());
+		}
+		
+	}
+
+	private void getQueryResult(ViewType view) {
+		
+		String customQuery = view.getTextNewQuery().getText().toUpperCase();
+		
+		if (Database.isValidQuery(customQuery,user.getType())) {
+			
+			try {
+				
+				Database.customSelect(connection,customQuery);
+
+				DefaultTableModel tableModel = new DefaultTableModel(Database.getCurrentQueryRows(), Database.getCurrentQueryHeader());
+				
+				view.getTableQueryResult().setModel(tableModel);
+				
+			} catch (SQLException e1) {
+				
+				Database.emptyCurrentQuery();
+				
+				JOptionPane.showMessageDialog(view.getFrame(), "Error: No han podido mostrarse las filas. ¿Has comprobado lo que estás buscando? ");
+			}
+			
+		}else {
+			
+			Database.emptyCurrentQuery();
+			
+			JOptionPane.showMessageDialog(view.getFrame(), "Error: El formato de la consulta no es válido");
+		}
+	}
+
+	private void exportCSV(ViewType view) {
+
+		if (Database.getCurrentQueryHeader() != null) {
+			
+			String fileExtension = "csv";
+			
+			JFileChooser chooser = new JFileChooser();
+			chooser.setCurrentDirectory(new File("."));
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			chooser.setFileFilter(new FileNameExtensionFilter("Archivo " + fileExtension.toUpperCase(), fileExtension));
+			
+			if (chooser.showOpenDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
+				
+				File chosenFile = getFileWithExtension(chooser.getSelectedFile(), fileExtension);
+				
+				try {
+					
+					saveCSV(chosenFile,";");
+					
+					JOptionPane.showMessageDialog(view.getFrame(), "Archivo creado");
+						
+				} catch (IOException e1) {
+					
+					JOptionPane.showMessageDialog(view.getFrame(), "Error: No ha podido crearse el archivo: " + e1.getMessage());
+				}
+			}
+			
+		}else {
+			
+			JOptionPane.showMessageDialog(view.getFrame(), "Error: No hay datos que exportar");
+		}
+		
+	}
+
+	private File getFileWithExtension(File chosenFile, String fileExtension) {
+		
+		String extension = "." + fileExtension;
+		
+		if (!chosenFile.getAbsolutePath().endsWith(extension)) {
+			
+			chosenFile = new File(chosenFile + extension);
+		}
+		
+		return chosenFile;
+	}
+
+	private void saveCSV(File chosenFile, String separator) throws IOException {
+		
+		BufferedWriter writer = Files.newBufferedWriter(chosenFile.toPath(), StandardCharsets.ISO_8859_1);
+		
+		String queryFirstLine = String.join(separator, Database.getCurrentQueryHeader());
+		
+		String[][] queryRestOfLines =  Database.getCurrentQueryRows();
+		
+		writer.write(queryFirstLine);
+		
+		for (String[] line : queryRestOfLines) {
+			
+			writer.newLine();
+			writer.write(String.join(separator, line));
+		}
+		
+		writer.close();
 	}
 }

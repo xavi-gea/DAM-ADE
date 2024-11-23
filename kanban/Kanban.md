@@ -6,14 +6,11 @@ kanban-plugin: board
 
 ## Backlog
 
-- [ ] Crear cartas para parte de clientes
-- [ ] [[Logout]]
 
 
 ## Doing
 
-- [ ] [[Consulta SELECT personalizada]]
-- [ ] [[Exportar SELECT personalizada a CSV]]
+- [ ] [[Pruebas]]
 
 
 ## Done
@@ -25,6 +22,10 @@ kanban-plugin: board
 - [ ] [[Login de usuarios]]
 - [ ] [[Registro de usuarios]]
 - [ ] [[Dudas]] ^3qlhmh
+- [ ] [[Consulta SELECT personalizada]]
+- [ ] [[Exportar SELECT personalizada a CSV]]
+- [ ] [[Logout]]
+- [ ] Crear cartas para parte de clientes
 
 
 

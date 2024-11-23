@@ -1,22 +1,18 @@
 package xgf.view;
 
+import java.awt.Font;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JButton;
-import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 
-public class AdminPanel implements ViewType {
+public class ClientPanel implements ViewType {
 
 	private JFrame frame;
-	private JButton btnNewUser;
-	private JButton btnImportCSV;
 	private JButton btnLogout;
-	private JScrollPane scrollPane;
-	private JTextArea textAreaXMLContent;
 	private JTextField textNewQuery;
 	private JButton btnNewQuery;
 	private JButton btnExportCSV;
@@ -26,57 +22,41 @@ public class AdminPanel implements ViewType {
 	/**
 	 * Create the application.
 	 */
-	public AdminPanel() {
+	public ClientPanel() {
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 666, 524);
+		frame.setBounds(100, 100, 666, 261);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Admin");
+		JLabel lblNewLabel = new JLabel("Cliente");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		lblNewLabel.setBounds(10, 5, 82, 29);
-		frame.getContentPane().add(lblNewLabel);
-		
-		btnImportCSV = new JButton("Importar CSV");
-		btnImportCSV.setBounds(260, 11, 120, 23);
-		frame.getContentPane().add(btnImportCSV);
-		
-		btnNewUser = new JButton("Nuevo Usuario");
-		btnNewUser.setBounds(390, 11, 120, 23);
-		frame.getContentPane().add(btnNewUser);		
+		frame.getContentPane().add(lblNewLabel);	
 		
 		btnLogout = new JButton("Cerrar Sesión");
 		btnLogout.setBounds(520, 11, 120, 23);
 		frame.getContentPane().add(btnLogout);
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 42, 630, 248);
-		frame.getContentPane().add(scrollPane);
-		
-		textAreaXMLContent = new JTextArea();
-		textAreaXMLContent.setEditable(false);
-		scrollPane.setViewportView(textAreaXMLContent);
-		
 		JLabel lblNewLabel_1 = new JLabel("Introduce Consulta:");
-		lblNewLabel_1.setBounds(10, 303, 114, 14);
+		lblNewLabel_1.setBounds(10, 49, 114, 14);
 		frame.getContentPane().add(lblNewLabel_1);
 		
 		textNewQuery = new JTextField();
-		textNewQuery.setBounds(134, 300, 246, 20);
+		textNewQuery.setBounds(134, 46, 246, 20);
 		frame.getContentPane().add(textNewQuery);
 		textNewQuery.setColumns(10);
 		
 		btnNewQuery = new JButton("Consultar");
-		btnNewQuery.setBounds(390, 300, 120, 23);
+		btnNewQuery.setBounds(390, 45, 120, 23);
 		frame.getContentPane().add(btnNewQuery);
 		
 		btnExportCSV = new JButton("Exportar CSV");
-		btnExportCSV.setBounds(520, 300, 120, 23);
+		btnExportCSV.setBounds(520, 45, 120, 23);
 		frame.getContentPane().add(btnExportCSV);
 		
 		scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 331, 630, 143);
+		scrollPane_1.setBounds(10, 74, 630, 143);
 		frame.getContentPane().add(scrollPane_1);
 		
 		tableQueryResult = new JTable();
@@ -86,20 +66,8 @@ public class AdminPanel implements ViewType {
 		frame.setVisible(true);
 	}
 	
-	public JButton getBtnImportCSV() {
-		return btnImportCSV;
-	}
-	
-	public JButton getBtnNewUser() {
-		return btnNewUser;
-	}
-	
 	public JButton getBtnLogout() {
 		return btnLogout;
-	}
-	
-	public JTextArea getTextAreaXMLContent() {
-		return textAreaXMLContent;
 	}
 	
 	public JTextField getTextNewQuery() {

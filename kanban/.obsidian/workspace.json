@@ -4,27 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "3eafd2aa5ddb1412",
+        "id": "a54b41cb9b41d65f",
         "type": "tabs",
         "children": [
           {
-            "id": "53aca152af48a75d",
+            "id": "540f2304171f3fe0",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "Kanban.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false
-                  ]
-                }
+                "file": "Pruebas.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-trello",
-              "title": "Kanban"
+              "icon": "lucide-file",
+              "title": "Pruebas"
             }
           }
         ]
@@ -169,10 +163,11 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "53aca152af48a75d",
+  "active": "540f2304171f3fe0",
   "lastOpenFiles": [
-    "Logout.md",
     "Kanban.md",
+    "Pruebas.md",
+    "Cards/Logout.md",
     "Cards/Exportar SELECT personalizada a CSV.md",
     "Cards/Consulta SELECT personalizada.md",
     "Cards/Base de datos con tabla y admin.md",
