@@ -13,6 +13,7 @@ public class MainPanel {
 
 	private JFrame frame;
 	private JButton btnLogin;
+	private JButton btnLoadCards;
 	
 
 	/**
@@ -30,7 +31,7 @@ public class MainPanel {
 		frame.getContentPane().add(panel_3);
 		panel_3.setLayout(null);
 		
-		JButton btnLoadCards = new JButton("Load Cards");
+		btnLoadCards = new JButton("Load Cards");
 		btnLoadCards.setBounds(0, 0, 100, 23);
 		panel_3.add(btnLoadCards);
 		
@@ -143,5 +144,9 @@ public class MainPanel {
 
 	public JButton getBtnLogin() {
 		return btnLogin;
+	}
+
+	public JButton getBtnLoadCards() {
+		return btnLoadCards;
 	}
 }
