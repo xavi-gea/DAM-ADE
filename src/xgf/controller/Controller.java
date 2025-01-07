@@ -3,11 +3,20 @@ package xgf.controller;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import java.io.ByteArrayInputStream;
 import javax.swing.JOptionPane;
 
 import xgf.model.*;
@@ -20,6 +29,9 @@ public class Controller {
 	private Register viewRegister;
 	
 	private User currentUser;
+	private Game currentGame;
+	
+	private Boolean gameStarted;
 	
 	private static File[] foldersToSearch = {
 			new File("." + File.separator + "img" + File.separator + "cards_es"),
@@ -86,7 +98,7 @@ public class Controller {
 					
 					String[] options = {"Crupier (A.I.)","User (Human)"};
 					
-					int chosenOption = JOptionPane.showOptionDialog(
+					int chosenStarter = JOptionPane.showOptionDialog(
 							viewMain.getFrame(),
 							"Who starts?",
 							"",
@@ -97,9 +109,11 @@ public class Controller {
 							options[0]
 					);
 					
-					if (chosenOption != -1) {
+					if (chosenStarter != -1) {
 						
-						System.out.println("chosen: " + chosenOption);
+						String chosenLanguage = viewMain.getCbbCardsSuit().getSelectedIndex() == 0 ? "cards_es" : "cards_fr";
+						
+						startGame(chosenStarter,chosenLanguage);
 					}
 					
 				}else {
@@ -108,8 +122,8 @@ public class Controller {
 				}			
 				
 			}
+			
 		});
-		
 		
 		viewMain.getBtnLogout().addActionListener(new ActionListener() {
 			
@@ -151,10 +165,6 @@ public class Controller {
 					
 					userLogin(userName, userPassword);
 					
-					System.out.println(viewMain.getBtnLogin().getBackground());
-					
-					
-					
 					viewMain.getBtnLogin().setBackground(Color.GREEN);
 					viewMain.getBtnLogin().setEnabled(false);
 					
@@ -180,6 +190,7 @@ public class Controller {
 			}			
 		});
 	}
+	
 	
 	private void initRegisterEventHandlers() {
 		
@@ -229,5 +240,46 @@ public class Controller {
 				}			
 			}
 		});
+	}
+	
+
+	private void startGame(int chosenStarter, String chosenLanguage) {
+		
+		Boolean playerStarts = chosenStarter == 1 ? true : false;
+		
+		List<Card> cardList = Database.getCardsFromCollection(chosenLanguage);
+		
+		Collections.shuffle(cardList);
+		
+		currentGame = new Game(playerStarts, cardList);
+		
+		if (!playerStarts) {
+			
+			// surround in new method populateBoard with parameter target? (player or crupier)
+			
+			Card cardFromList = currentGame.getNewCard();
+			
+			System.out.println(cardFromList.getSuit());
+			System.out.println(cardFromList.getPoints());
+			
+			String cardBase64 = Database.getBase64FromCard(cardFromList,chosenLanguage);
+			
+			System.out.println(cardBase64);
+			
+			byte[] base64ToBytes = Base64.getDecoder().decode(cardBase64);
+			
+			try {
+				
+				BufferedImage cardBufferedImage = ImageIO.read(new ByteArrayInputStream(base64ToBytes));
+				
+				Image cardImage = cardBufferedImage.getScaledInstance(-1, 400, Image.SCALE_SMOOTH);
+				
+				viewMain.getBtnCrupier().setIcon(new ImageIcon(cardImage));
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

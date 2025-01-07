@@ -3,8 +3,12 @@ package xgf.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.BsonObjectId;
 import org.bson.Document;
+import org.bson.codecs.ObjectIdCodec;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.json.JSONObject;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -79,7 +83,7 @@ public class Database {
 				eq("user", name), 
 				eq("pass", password)
 		);
-		
+				
 		MongoCollection<Document> users = database.getCollection("users");
 		
 		MongoCursor<Document> usersCursor = users.find(queryUserPassword).iterator();
@@ -104,4 +108,62 @@ public class Database {
 		disconnectFromDatabase();
 	}
 
+	
+	public static List<Card> getCardsFromCollection(String collectionName) {
+		
+		List<Card> cardList = new ArrayList<Card>();
+		
+		connectToDatabase();
+		
+		MongoCollection<Document> collection = database.getCollection(collectionName);
+		
+		MongoCursor<Document> cardCursor = collection.find().iterator();
+		
+		while (cardCursor.hasNext()) {
+			
+			JSONObject cardJson = new JSONObject(cardCursor.next().toJson());
+			
+			//System.out.println(cardJson.getJSONObject("_id").getString("$oid"));
+			//System.out.println(cardJson.get("_id").toString());
+			
+			cardList.add(
+					new Card(
+							cardJson.getJSONObject("_id").getString("$oid"),
+							cardJson.getString("suit"), 
+							cardJson.getInt("points"),
+							""
+					)
+			);
+		}
+		
+		disconnectFromDatabase();
+		
+		return cardList;		
+	}
+	
+	public static String getBase64FromCard(Card card, String collectionName) {
+		
+		String cardBase64 = "";
+		
+		connectToDatabase();
+		
+		System.out.println(new ObjectId(card.getId()));
+		
+		Bson queryBase64 = eq("_id", new ObjectId(card.getId()));
+		
+		MongoCollection<Document> cards = database.getCollection(collectionName);
+		
+		MongoCursor<Document> cardCursor = cards.find(queryBase64).iterator();
+		
+		if (cardCursor.hasNext()) {
+			
+			JSONObject cardJson = new JSONObject(cardCursor.next().toJson());
+			
+			cardBase64 = cardJson.getString("base64");
+		}
+		
+		disconnectFromDatabase();
+		
+		return cardBase64;
+	}
 }

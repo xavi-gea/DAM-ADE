@@ -16,9 +16,12 @@ public class MainPanel {
 	private JButton btnRegister;
 	private JButton btnLogin;
 	
+	JComboBox<String> cbbCardsSuit;
 	private JButton btnStart;
 	
 	private JButton btnLogout;
+	
+	private JButton btnCrupier;
 	
 
 	/**
@@ -48,7 +51,7 @@ public class MainPanel {
 		btnLogin.setBounds(209, 0, 89, 23);
 		panel_3.add(btnLogin);
 		
-		JComboBox<String> cbbCardsSuit = new JComboBox<String>();
+		cbbCardsSuit = new JComboBox<String>();
 		cbbCardsSuit.setBounds(393, 0, 44, 22);
 		panel_3.add(cbbCardsSuit);
 		cbbCardsSuit.setModel(new DefaultComboBoxModel<String>(new String[] {"ES", "FR"}));
@@ -82,8 +85,7 @@ public class MainPanel {
 		lblCrupier.setBounds(0, 0, 56, 14);
 		panel.add(lblCrupier);
 		
-		JButton btnCrupier = new JButton("");
-		btnCrupier.setEnabled(false);
+		btnCrupier = new JButton("");
 		btnCrupier.setBounds(0, 25, 298, 421);
 		panel.add(btnCrupier);
 		
@@ -163,7 +165,9 @@ public class MainPanel {
 		return btnRegister;
 	}
 	
-	
+	public JComboBox<String> getCbbCardsSuit() {
+		return cbbCardsSuit;
+	}
 	
 	public JButton getBtnStart() {
 		return btnStart;
@@ -172,4 +176,10 @@ public class MainPanel {
 	public JButton getBtnLogout() {
 		return btnLogout;
 	}
+
+	public JButton getBtnCrupier() {
+		return btnCrupier;
+	}
+
+	
 }

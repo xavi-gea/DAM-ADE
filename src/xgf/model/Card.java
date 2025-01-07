@@ -8,12 +8,23 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bson.types.ObjectId;
+import org.json.JSONObject;
 
 public class Card {
 
+	private String id;
 	private String suit;
 	private Integer points;
 	private String base64;
+	
+	public Card(String id, String suit, Integer points, String base64) {
+		super();
+		this.id = id;
+		this.suit = suit;
+		this.points = points;
+		this.base64 = base64;
+	}
 	
 	public Card(String suit, Integer points, String base64) {
 		super();
@@ -67,6 +78,10 @@ public class Card {
 		return fileName.replace(extensionArchivo,"");
 	}
 
+	public String getId() {
+		return id;
+	}
+	
 	public String getSuit() {
 		return suit;
 	}
@@ -78,4 +93,5 @@ public class Card {
 	public String getBase64() {
 		return base64;
 	}
+
 }
