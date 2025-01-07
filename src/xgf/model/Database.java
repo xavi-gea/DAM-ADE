@@ -1,8 +1,6 @@
 package xgf.model;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.bson.Document;
@@ -13,15 +11,18 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
+import static com.mongodb.client.model.Filters.*;
+
 public class Database {
 	
+	private static MongoClient mongoClient;
 	private static MongoDatabase database;
 
 	public static void connectToDatabase() {
 		
-		MongoClient mongoClient = new MongoClient("localhost", 27017);
-		
 		try {
+			
+			mongoClient = new MongoClient("localhost", 27017);
 			
 			database = mongoClient.getDatabase("casino");
 			
@@ -29,10 +30,16 @@ public class Database {
 			
 			e.printStackTrace();
 		}
+	}
+	
+	public static void disconnectFromDatabase() {
 		
+		mongoClient.close();
 	}
 
 	public static void insertCardsToCollection(List<Card> cards, String collectionName) {
+		
+		connectToDatabase();
 		
 		database.getCollection(collectionName).drop();
 		
@@ -44,31 +51,57 @@ public class Database {
 		
 		for (Card card : cards) {
 			
+			Integer cardPoints = card.getPoints();
+			 
+			if (cardPoints >= 11) {
+				
+				cardPoints = 10;
+			}
+			
 			Document doc = new Document();
 			doc.append("suit", card.getSuit());
-			doc.append("points", card.getPoints());
+			doc.append("points", cardPoints);
 			doc.append("base64", card.getBase64());
 			
 			cardDocuments.add(doc);
 		}
 			
-		collection.insertMany(cardDocuments);		
+		collection.insertMany(cardDocuments);
+		
+		disconnectFromDatabase();
 	}
 
-//	public static boolean userExists(String name, String password) {
-//		
-//		Bson queryUserPassword = and();
-//		
-//		MongoCollection<Document> users = database.getCollection("users");
-//		
-//		MongoCursor<Document> usersCursor = users.find(new Bson
-//				and(
-//						eq("user",name),
-//						eq("pass",password)
-//				)
-//		);
-//		
-//		return false;
-//	}
+	public static boolean userExists(String name, String password) {
+		
+		connectToDatabase();
+		
+		Bson queryUserPassword = and(
+				eq("user", name), 
+				eq("pass", password)
+		);
+		
+		MongoCollection<Document> users = database.getCollection("users");
+		
+		MongoCursor<Document> usersCursor = users.find(queryUserPassword).iterator();
+		
+		disconnectFromDatabase();
+		
+		return usersCursor.hasNext() ? true : false;
+	}
+
+	public static void setUpUser(String name, String password) {
+		
+		connectToDatabase();
+		
+		MongoCollection<Document> users = database.getCollection("users");
+		
+		Document doc = new Document();
+		doc.append("user", name);
+		doc.append("pass", password);
+		
+		users.insertOne(doc);
+		
+		disconnectFromDatabase();
+	}
 
 }

@@ -12,10 +12,10 @@ import org.apache.commons.codec.binary.Base64;
 public class Card {
 
 	private String suit;
-	private String points;
+	private Integer points;
 	private String base64;
 	
-	public Card(String suit, String points, String base64) {
+	public Card(String suit, Integer points, String base64) {
 		super();
 		this.suit = suit;
 		this.points = points;
@@ -44,7 +44,7 @@ public class Card {
 					e.printStackTrace();
 				}
 				
-				cardList.add(new Card(splitFileName[0], splitFileName[1], encodedString));
+				cardList.add(new Card(splitFileName[0], Integer.parseInt(splitFileName[1]), encodedString));
 			}
 		}
 		
@@ -71,7 +71,7 @@ public class Card {
 		return suit;
 	}
 
-	public String getPoints() {
+	public Integer getPoints() {
 		return points;
 	}
 

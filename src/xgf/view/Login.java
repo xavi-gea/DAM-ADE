@@ -25,6 +25,8 @@ public class Login {
 	public Login() {
 		
 		frame = new JFrame();
+		frame.setResizable(false);
+		frame.setAlwaysOnTop(true);
 		frame.setBounds(100, 100, 265, 194);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);

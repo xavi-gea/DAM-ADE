@@ -12,8 +12,13 @@ import javax.swing.JPanel;
 public class MainPanel {
 
 	private JFrame frame;
-	private JButton btnLogin;
 	private JButton btnLoadCards;
+	private JButton btnRegister;
+	private JButton btnLogin;
+	
+	private JButton btnStart;
+	
+	private JButton btnLogout;
 	
 
 	/**
@@ -35,7 +40,7 @@ public class MainPanel {
 		btnLoadCards.setBounds(0, 0, 100, 23);
 		panel_3.add(btnLoadCards);
 		
-		JButton btnRegister = new JButton("Register");
+		btnRegister = new JButton("Register");
 		btnRegister.setBounds(110, 0, 89, 23);
 		panel_3.add(btnRegister);
 		
@@ -52,7 +57,7 @@ public class MainPanel {
 		lblCardsSuit.setBounds(308, 4, 75, 14);
 		panel_3.add(lblCardsSuit);
 		
-		JButton btnStart = new JButton("Start");
+		btnStart = new JButton("Start");
 		btnStart.setBounds(447, 0, 89, 23);
 		panel_3.add(btnStart);
 		
@@ -64,7 +69,7 @@ public class MainPanel {
 		btnHallOfFame.setBounds(645, 0, 117, 23);
 		panel_3.add(btnHallOfFame);
 		
-		JButton btnLogout = new JButton("Logout");
+		btnLogout = new JButton("Logout");
 		btnLogout.setBounds(772, 0, 89, 23);
 		panel_3.add(btnLogout);
 		
@@ -141,12 +146,30 @@ public class MainPanel {
 		frame.setVisible(true);
 		
 	}
+	
+	public JFrame getFrame() {
+		return frame;
+	}
+
+	public JButton getBtnLoadCards() {
+		return btnLoadCards;
+	}
 
 	public JButton getBtnLogin() {
 		return btnLogin;
 	}
 
-	public JButton getBtnLoadCards() {
-		return btnLoadCards;
+	public JButton getBtnRegister() {
+		return btnRegister;
+	}
+	
+	
+	
+	public JButton getBtnStart() {
+		return btnStart;
+	}
+
+	public JButton getBtnLogout() {
+		return btnLogout;
 	}
 }
