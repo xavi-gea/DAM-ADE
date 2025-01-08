@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class MainPanel {
 
-	private JFrame frame;
+	private JFrame frmBackjack;
 	private JButton btnLoadCards;
 	private JButton btnRegister;
 	private JButton btnLogin;
@@ -20,6 +20,7 @@ public class MainPanel {
 	private JButton btnStart;
 	
 	private JButton btnSave;
+	private JButton btnHallOfFame;
 	private JButton btnLogout;
 	
 	private JButton btnCrupier;
@@ -39,14 +40,15 @@ public class MainPanel {
 	 */
 	public MainPanel() {
 		
-		frame = new JFrame();
-		frame.setBounds(100, 100, 896, 648);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmBackjack = new JFrame();
+		frmBackjack.setTitle("21 BackJack");
+		frmBackjack.setBounds(100, 100, 896, 648);
+		frmBackjack.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmBackjack.getContentPane().setLayout(null);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(10, 11, 861, 23);
-		frame.getContentPane().add(panel_3);
+		frmBackjack.getContentPane().add(panel_3);
 		panel_3.setLayout(null);
 		
 		btnLoadCards = new JButton("Load Cards");
@@ -79,7 +81,7 @@ public class MainPanel {
 		btnSave.setBounds(546, 0, 89, 23);
 		panel_3.add(btnSave);
 		
-		JButton btnHallOfFame = new JButton("Hall of Fame");
+		btnHallOfFame = new JButton("Hall of Fame");
 		btnHallOfFame.setBounds(645, 0, 117, 23);
 		panel_3.add(btnHallOfFame);
 		
@@ -89,7 +91,7 @@ public class MainPanel {
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 45, 298, 496);
-		frame.getContentPane().add(panel);
+		frmBackjack.getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblCrupier = new JLabel("CRUPIER");
@@ -119,7 +121,7 @@ public class MainPanel {
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
 		panel_1.setBounds(457, 45, 298, 496);
-		frame.getContentPane().add(panel_1);
+		frmBackjack.getContentPane().add(panel_1);
 		
 		JLabel lblPlayer = new JLabel("PLAYER");
 		lblPlayer.setBounds(0, 0, 46, 14);
@@ -147,7 +149,7 @@ public class MainPanel {
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(457, 552, 298, 33);
-		frame.getContentPane().add(panel_2);
+		frmBackjack.getContentPane().add(panel_2);
 		
 		btnNewCard = new JButton("New card");
 		btnNewCard.setEnabled(false);
@@ -157,12 +159,11 @@ public class MainPanel {
 		btnStand.setEnabled(false);
 		panel_2.add(btnStand);
 		
-		frame.setVisible(true);
-		
+		frmBackjack.setVisible(true);
 	}
 	
 	public JFrame getFrame() {
-		return frame;
+		return frmBackjack;
 	}
 
 	public JButton getBtnLoadCards() {
@@ -223,6 +224,10 @@ public class MainPanel {
 
 	public JButton getBtnSave() {
 		return btnSave;
+	}
+
+	public JButton getBtnHallOfFame() {
+		return btnHallOfFame;
 	}
 
 	

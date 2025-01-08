@@ -15,6 +15,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
+import static com.mongodb.client.model.Sorts.*;
 import static com.mongodb.client.model.Filters.*;
 
 public class Database {
@@ -182,5 +183,61 @@ public class Database {
 		collection.insertOne(doc);
 		
 		disconnectFromDatabase();
+	}
+
+//	public static List<Score> getScoresFromCollection(String collectionName) {
+//		
+//		List<Score> scoreList = new ArrayList<Score>();
+//		
+//		connectToDatabase();
+//		
+//		MongoCollection<Document> collection = database.getCollection(collectionName);
+//		
+//		MongoCursor<Document> cardCursor = collection.find().sort(descending("points")).iterator();
+//		
+//		while (cardCursor.hasNext()) {
+//			
+//			JSONObject cardJson = new JSONObject(cardCursor.next().toJson());
+//			
+//			scoreList.add(
+//					new Score(
+//							cardJson.getString("user"),
+//							cardJson.getString("suit"),
+//							cardJson.getInt("points"),
+//							cardJson.getString("timestamp")
+//					)
+//			);
+//		}
+//		
+//		disconnectFromDatabase();
+//		
+//		return scoreList;
+//	}
+	
+	public static List<String> getScoresFromCollection(String collectionName) {
+		
+		List<String> scoreList = new ArrayList<String>();
+		
+		connectToDatabase();
+		
+		MongoCollection<Document> collection = database.getCollection(collectionName);
+		
+		MongoCursor<Document> cardCursor = collection.find().sort(descending("points")).iterator();
+		
+		while (cardCursor.hasNext()) {
+			
+			JSONObject cardJson = new JSONObject(cardCursor.next().toJson());
+			
+			scoreList.add(
+					
+					cardJson.getString("user") + " " +
+					cardJson.getInt("points") + " points " + 
+					"(Suit " + cardJson.getString("suit").toUpperCase() + ", " + cardJson.getString("timestamp") + ")"
+			);
+		}
+		
+		disconnectFromDatabase();
+		
+		return scoreList;
 	}
 }

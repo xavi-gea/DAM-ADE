@@ -14,9 +14,11 @@ import java.util.List;
 
 import java.awt.Image;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.io.ByteArrayInputStream;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 
 import xgf.model.*;
 import xgf.view.*;
@@ -26,6 +28,7 @@ public class Controller {
 	private MainPanel viewMain;
 	private Login viewLogin;
 	private Register viewRegister;
+	private HallOfFame viewhallOfFame;
 	
 	private User currentUser;
 	private Game currentGame;
@@ -115,7 +118,7 @@ public class Controller {
 					
 				}else {
 					
-					JOptionPane.showMessageDialog(viewMain.getFrame(), "There must be a user logged in");
+					JOptionPane.showMessageDialog(viewMain.getFrame(), "There must be a user logged in", "Info", JOptionPane.INFORMATION_MESSAGE);
 				}			
 				
 			}
@@ -135,23 +138,42 @@ public class Controller {
 						
 						Database.insertScore(currentUser.getName(), splitGameLanguage[1], currentGame.getPlayerTotalScore());
 						
-						JOptionPane.showMessageDialog(viewMain.getFrame(), "The score has been saved");
+						JOptionPane.showMessageDialog(viewMain.getFrame(), "The score has been saved", "Info", JOptionPane.INFORMATION_MESSAGE);
 						
 						viewMain.getBtnSave().setEnabled(false);
 						
 					} catch (Exception e2) {
 						
-						JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: Score could not be saved", "", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: Score could not be saved", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 					
 				}else {
 					
-					JOptionPane.showMessageDialog(viewMain.getFrame(), "There must be a user logged in");
+					JOptionPane.showMessageDialog(viewMain.getFrame(), "There must be a user logged in", "Info", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
 		
-		// hall of fame
+		viewMain.getBtnHallOfFame().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if (currentUser != null) {
+					
+					List<String> scoreList = Database.getScoresFromCollection("scores");
+					
+					viewhallOfFame = new HallOfFame();
+					viewhallOfFame.getFrame().setLocationRelativeTo(viewMain.getFrame());
+					
+					viewhallOfFame.getListScores().setListData(scoreList.toArray(new String[0]));
+					
+				}else {
+					
+					JOptionPane.showMessageDialog(viewMain.getFrame(), "There must be a user logged in", "Info", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
 		
 		viewMain.getBtnLogout().addActionListener(new ActionListener() {
 			
@@ -172,7 +194,7 @@ public class Controller {
 					
 				}else {
 					
-					JOptionPane.showMessageDialog(viewMain.getFrame(), "There must be a user logged in");
+					JOptionPane.showMessageDialog(viewMain.getFrame(), "There must be a user logged in", "Info", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -282,11 +304,11 @@ public class Controller {
 					
 				} catch (NullPointerException e2) {
 					
-					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: " + e2.getMessage(),"",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: " + e2.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 					
 				}catch (Exception e1) {
 					
-					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: The user could not be created: " + e1.getMessage(),"",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(viewRegister.getFrame(), "Error: The user could not be created: " + e1.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 				}			
 			}
 		});
@@ -359,7 +381,7 @@ public class Controller {
 			}else {
 				
 				currentGame.setPlayerStands(true);
-				JOptionPane.showMessageDialog(viewMain.getFrame(), "User stands","",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "User stands", "Info", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
 		}else {
@@ -374,7 +396,7 @@ public class Controller {
 				
 			}else {
 				
-				JOptionPane.showMessageDialog(viewMain.getFrame(), "Crupier stands","",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "Crupier stands", "Info", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		
@@ -384,7 +406,7 @@ public class Controller {
 			if (currentGame.isPlayerTurn()) {
 				
 				currentGame.setIsPlayerTurn(false);
-				JOptionPane.showMessageDialog(viewMain.getFrame(), "Crupier turn","",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "Crupier turn", "Info", JOptionPane.INFORMATION_MESSAGE);
 				
 				if (currentGame.crupierStands()) {
 					
@@ -398,7 +420,7 @@ public class Controller {
 			}else {
 				
 				currentGame.setIsPlayerTurn(true);
-				JOptionPane.showMessageDialog(viewMain.getFrame(), "User turn","",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "User turn", "Info", JOptionPane.INFORMATION_MESSAGE);
 			}
 		
 		}else {
@@ -442,11 +464,11 @@ public class Controller {
 		
 		if(playerWins) {
 			
-			JOptionPane.showMessageDialog(viewMain.getFrame(), "Game over. The user wins!","",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(viewMain.getFrame(), "Game over. The user wins!", "Info", JOptionPane.INFORMATION_MESSAGE);
 			
 		}else {
 			
-			JOptionPane.showMessageDialog(viewMain.getFrame(), "Game over. The crupier wins!","",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(viewMain.getFrame(), "Game over. The crupier wins!", "Info", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 

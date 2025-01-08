@@ -14,7 +14,7 @@ import java.awt.GridLayout;
  */
 public class Login {
 
-	private JFrame frame;
+	private JFrame frmLogin;
 	private JTextField textUser;
 	private JPasswordField passwordUser;
 	private JButton btnLogin;
@@ -24,16 +24,17 @@ public class Login {
 	 */
 	public Login() {
 		
-		frame = new JFrame();
-		frame.setResizable(false);
-		frame.setAlwaysOnTop(true);
-		frame.setBounds(100, 100, 265, 194);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmLogin = new JFrame();
+		frmLogin.setTitle("Login");
+		frmLogin.setResizable(false);
+		frmLogin.setAlwaysOnTop(true);
+		frmLogin.setBounds(100, 100, 265, 194);
+		frmLogin.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frmLogin.getContentPane().setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(39, 11, 170, 135);
-		frame.getContentPane().add(panel_1);
+		frmLogin.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -65,7 +66,7 @@ public class Login {
 		btnLogin.setBounds(16, 0, 138, 23);
 		panel2.add(btnLogin);
 		
-		frame.setVisible(true);
+		frmLogin.setVisible(true);
 	}
 	
 	public JTextField getTextUser() {
@@ -81,6 +82,6 @@ public class Login {
 	}
 	
 	public JFrame getFrame() {
-		return frame;
+		return frmLogin;
 	}
 }

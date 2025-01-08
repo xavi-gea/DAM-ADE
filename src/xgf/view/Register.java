@@ -15,7 +15,7 @@ import javax.swing.SwingConstants;
  */
 public class Register {
 
-	private JFrame frame;
+	private JFrame frmRegister;
 	private JTextField textUser;
 	private JPasswordField passwordUser;
 	private JButton btnRegister;
@@ -26,15 +26,16 @@ public class Register {
 	 */
 	public Register() {
 		
-		frame = new JFrame();
-		frame.setAlwaysOnTop(true);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setBounds(100, 100, 265, 264);
-		frame.getContentPane().setLayout(null);
+		frmRegister = new JFrame();
+		frmRegister.setTitle("Register");
+		frmRegister.setAlwaysOnTop(true);
+		frmRegister.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frmRegister.setBounds(100, 100, 265, 264);
+		frmRegister.getContentPane().setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(39, 11, 170, 203);
-		frame.getContentPane().add(panel_1);
+		frmRegister.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -73,7 +74,7 @@ public class Register {
 		btnRegister.setBounds(16, 0, 138, 23);
 		panel2.add(btnRegister);
 		
-		frame.setVisible(true);
+		frmRegister.setVisible(true);
 	}
 	
 	public JTextField getTextUser() {
@@ -93,7 +94,7 @@ public class Register {
 	}
 	
 	public JFrame getFrame() {
-		return frame;
+		return frmRegister;
 	}
 	
 }
