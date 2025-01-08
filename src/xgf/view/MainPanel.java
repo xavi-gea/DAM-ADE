@@ -19,9 +19,19 @@ public class MainPanel {
 	JComboBox<String> cbbCardsSuit;
 	private JButton btnStart;
 	
+	private JButton btnSave;
 	private JButton btnLogout;
 	
 	private JButton btnCrupier;
+	private JLabel lblTotalScoreCrupier;
+	private JLabel lblScoreHistoryCrupier;
+	
+	private JButton btnPlayer;
+	private JLabel lblTotalScorePlayer;
+	private JLabel lblScoreHistoryPlayer;
+	
+	private JButton btnNewCard;
+	private JButton btnStand;
 	
 
 	/**
@@ -64,7 +74,8 @@ public class MainPanel {
 		btnStart.setBounds(447, 0, 89, 23);
 		panel_3.add(btnStart);
 		
-		JButton btnSave = new JButton("Save");
+		btnSave = new JButton("Save");
+		btnSave.setEnabled(false);
 		btnSave.setBounds(546, 0, 89, 23);
 		panel_3.add(btnSave);
 		
@@ -97,12 +108,12 @@ public class MainPanel {
 		lblScoreHistoryCrupierText.setBounds(0, 482, 100, 14);
 		panel.add(lblScoreHistoryCrupierText);
 		
-		JLabel lblTotalScoreCrupier = new JLabel("");
+		lblTotalScoreCrupier = new JLabel("");
 		lblTotalScoreCrupier.setBounds(110, 457, 46, 14);
 		panel.add(lblTotalScoreCrupier);
 		
-		JLabel lblScoreHistoryCrupier = new JLabel("");
-		lblScoreHistoryCrupier.setBounds(110, 482, 89, 14);
+		lblScoreHistoryCrupier = new JLabel("");
+		lblScoreHistoryCrupier.setBounds(110, 482, 178, 14);
 		panel.add(lblScoreHistoryCrupier);
 		
 		JPanel panel_1 = new JPanel();
@@ -114,8 +125,7 @@ public class MainPanel {
 		lblPlayer.setBounds(0, 0, 46, 14);
 		panel_1.add(lblPlayer);
 		
-		JButton btnPlayer = new JButton("");
-		btnPlayer.setEnabled(false);
+		btnPlayer = new JButton("");
 		btnPlayer.setBounds(0, 25, 298, 421);
 		panel_1.add(btnPlayer);
 		
@@ -127,22 +137,24 @@ public class MainPanel {
 		lblScoreHistoryPlayerText.setBounds(0, 482, 100, 14);
 		panel_1.add(lblScoreHistoryPlayerText);
 		
-		JLabel lblTotalScorePlayer = new JLabel("");
+		lblTotalScorePlayer = new JLabel("");
 		lblTotalScorePlayer.setBounds(110, 457, 46, 14);
 		panel_1.add(lblTotalScorePlayer);
 		
-		JLabel lblScoreHistoryPlayer = new JLabel("");
-		lblScoreHistoryPlayer.setBounds(110, 482, 89, 14);
+		lblScoreHistoryPlayer = new JLabel("");
+		lblScoreHistoryPlayer.setBounds(110, 482, 178, 14);
 		panel_1.add(lblScoreHistoryPlayer);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(457, 552, 298, 33);
 		frame.getContentPane().add(panel_2);
 		
-		JButton btnNewCard = new JButton("New card");
+		btnNewCard = new JButton("New card");
+		btnNewCard.setEnabled(false);
 		panel_2.add(btnNewCard);
 		
-		JButton btnStand = new JButton("Stand");
+		btnStand = new JButton("Stand");
+		btnStand.setEnabled(false);
 		panel_2.add(btnStand);
 		
 		frame.setVisible(true);
@@ -179,6 +191,38 @@ public class MainPanel {
 
 	public JButton getBtnCrupier() {
 		return btnCrupier;
+	}
+
+	public JLabel getLblTotalScoreCrupier() {
+		return lblTotalScoreCrupier;
+	}
+
+	public JLabel getLblScoreHistoryCrupier() {
+		return lblScoreHistoryCrupier;
+	}
+
+	public JButton getBtnPlayer() {
+		return btnPlayer;
+	}
+
+	public JLabel getLblTotalScorePlayer() {
+		return lblTotalScorePlayer;
+	}
+
+	public JLabel getLblScoreHistoryPlayer() {
+		return lblScoreHistoryPlayer;
+	}
+
+	public JButton getBtnNewCard() {
+		return btnNewCard;
+	}
+
+	public JButton getBtnStand() {
+		return btnStand;
+	}
+
+	public JButton getBtnSave() {
+		return btnSave;
 	}
 
 	

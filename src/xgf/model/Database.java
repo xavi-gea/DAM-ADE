@@ -147,13 +147,13 @@ public class Database {
 		
 		connectToDatabase();
 		
-		System.out.println(new ObjectId(card.getId()));
+		//System.out.println(new ObjectId(card.getId()));
 		
-		Bson queryBase64 = eq("_id", new ObjectId(card.getId()));
+		Bson queryCardID = eq("_id", new ObjectId(card.getId()));
 		
 		MongoCollection<Document> cards = database.getCollection(collectionName);
 		
-		MongoCursor<Document> cardCursor = cards.find(queryBase64).iterator();
+		MongoCursor<Document> cardCursor = cards.find(queryCardID).iterator();
 		
 		if (cardCursor.hasNext()) {
 			

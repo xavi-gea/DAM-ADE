@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import java.io.ByteArrayInputStream;
@@ -30,8 +29,6 @@ public class Controller {
 	
 	private User currentUser;
 	private Game currentGame;
-	
-	private Boolean gameStarted;
 	
 	private static File[] foldersToSearch = {
 			new File("." + File.separator + "img" + File.separator + "cards_es"),
@@ -146,6 +143,26 @@ public class Controller {
 				}
 			}
 		});
+		
+		viewMain.getBtnNewCard().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				newGameTurn(true);
+			}
+		});
+		
+		viewMain.getBtnStand().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				viewMain.getBtnNewCard().setEnabled(false);
+				
+				newGameTurn(false);
+			}
+		});
 	}
 
 	private void initLoginEventHandlers() {
@@ -245,41 +262,179 @@ public class Controller {
 
 	private void startGame(int chosenStarter, String chosenLanguage) {
 		
+		resetGameBoard();
+		
 		Boolean playerStarts = chosenStarter == 1 ? true : false;
 		
 		List<Card> cardList = Database.getCardsFromCollection(chosenLanguage);
 		
 		Collections.shuffle(cardList);
 		
-		currentGame = new Game(playerStarts, cardList);
+		currentGame = new Game(playerStarts, cardList, chosenLanguage);
 		
-		if (!playerStarts) {
+		if (!playerStarts) newGameTurn(true);
+	}
+	
+	private void resetGameBoard() {
+		
+		viewMain.getBtnCrupier().setIcon(null);
+		viewMain.getLblTotalScoreCrupier().setText(null);
+		viewMain.getLblScoreHistoryCrupier().setText(null);
+		
+		viewMain.getBtnPlayer().setIcon(null);
+		viewMain.getLblTotalScorePlayer().setText(null);
+		viewMain.getLblScoreHistoryPlayer().setText(null);
+		
+		viewMain.getBtnSave().setEnabled(false);
+		
+		viewMain.getBtnNewCard().setEnabled(true);
+		viewMain.getBtnStand().setEnabled(true);
+	}
+
+	private void newGameTurn(Boolean takeNewCard) {
+		
+		Card cardFromList = null;
+		Image cardImage = null;
+		
+		if (takeNewCard) {
 			
-			// surround in new method populateBoard with parameter target? (player or crupier)
+			cardFromList = currentGame.getNewCard();
+			cardImage = getImageFromCard(cardFromList);
+		}
+		
+		if (currentGame.isPlayerTurn()) {
 			
-			Card cardFromList = currentGame.getNewCard();
-			
-			System.out.println(cardFromList.getSuit());
-			System.out.println(cardFromList.getPoints());
-			
-			String cardBase64 = Database.getBase64FromCard(cardFromList,chosenLanguage);
-			
-			System.out.println(cardBase64);
-			
-			byte[] base64ToBytes = Base64.getDecoder().decode(cardBase64);
-			
-			try {
+			if (takeNewCard) {
 				
-				BufferedImage cardBufferedImage = ImageIO.read(new ByteArrayInputStream(base64ToBytes));
+				Integer cardPoints = cardFromList.getPoints();
 				
-				Image cardImage = cardBufferedImage.getScaledInstance(-1, 400, Image.SCALE_SMOOTH);
+				if (cardPoints == 1 && currentGame.getGameLanguage().equals("cards_fr")) {
+					
+					cardPoints = getAcePoints();
+				}
+				
+				currentGame.increasePlayerTotalScore(cardPoints);
+				currentGame.increasePlayerScoreHistory(cardPoints);
+				
+				viewMain.getBtnPlayer().setIcon(new ImageIcon(cardImage));
+				viewMain.getLblTotalScorePlayer().setText(currentGame.getPlayerTotalScore().toString());
+				viewMain.getLblScoreHistoryPlayer().setText(String.join(" ", currentGame.getPlayerScoreHistory()));
+				
+			}else {
+				
+				currentGame.setPlayerStands(true);
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "User stands","",JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		}else {
+			
+			if (takeNewCard) {
+				
+				currentGame.makeCrupierPlay(cardFromList);
 				
 				viewMain.getBtnCrupier().setIcon(new ImageIcon(cardImage));
+				viewMain.getLblTotalScoreCrupier().setText(currentGame.getCrupierTotalScore().toString());
+				viewMain.getLblScoreHistoryCrupier().setText(String.join(" ", currentGame.getCrupierScoreHistory()));
 				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			}else {
+				
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "Crupier stands","",JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
+		
+		
+		if (!currentGame.winnerExists()) {
+			
+			if (currentGame.isPlayerTurn()) {
+				
+				currentGame.setIsPlayerTurn(false);
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "Crupier turn","",JOptionPane.INFORMATION_MESSAGE);
+				
+				if (currentGame.crupierStands()) {
+					
+					newGameTurn(false);
+					
+				}else {
+					
+					newGameTurn(true);
+				}
+				
+			}else {
+				
+				currentGame.setIsPlayerTurn(true);
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "User turn","",JOptionPane.INFORMATION_MESSAGE);
+			}
+		
+		}else {
+			
+			endGame();
+		}
+	}
+
+	private Integer getAcePoints() {
+		
+		String[] options = {"1","11"};
+		
+		int chosenStarter = JOptionPane.showOptionDialog(
+				viewMain.getFrame(),
+				"How many points do you want?",
+				"",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,     
+				options,  
+				options[0]
+		);
+		
+		return chosenStarter == 1 ? 11 : 1;
+	}
+
+	private void endGame() {
+		
+		Game.gameInProgress = false;
+		
+		viewMain.getBtnSave().setEnabled(true);
+		viewMain.getBtnNewCard().setEnabled(false);
+		viewMain.getBtnStand().setEnabled(false);
+		
+		Boolean playerWins = false;
+		
+		if (currentGame.getPlayerTotalScore() == 21 || currentGame.getCrupierTotalScore() > 21) {
+			
+			playerWins = true;
+		}
+		
+		if(playerWins) {
+			
+			JOptionPane.showMessageDialog(viewMain.getFrame(), "Game over. The user wins!","",JOptionPane.INFORMATION_MESSAGE);
+			
+		}else {
+			
+			JOptionPane.showMessageDialog(viewMain.getFrame(), "Game over. The crupier wins!","",JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	private Image getImageFromCard(Card card) {
+		
+		Image cardImage = null;
+		
+		String cardBase64 = Database.getBase64FromCard(card,currentGame.getGameLanguage());
+		
+//		System.out.println(cardBase64);
+		
+		byte[] base64ToBytes = Base64.getDecoder().decode(cardBase64);
+		
+		try {
+			
+			BufferedImage cardBufferedImage = ImageIO.read(new ByteArrayInputStream(base64ToBytes));
+			
+			cardImage = cardBufferedImage.getScaledInstance(-1, 400, Image.SCALE_SMOOTH);
+			
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		
+		return cardImage;
 	}
 }
