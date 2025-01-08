@@ -1,11 +1,11 @@
 package xgf.model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.BsonObjectId;
 import org.bson.Document;
-import org.bson.codecs.ObjectIdCodec;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
@@ -165,5 +165,22 @@ public class Database {
 		disconnectFromDatabase();
 		
 		return cardBase64;
+	}
+	
+	public static void insertScore(String userName, String suit, Integer points) {
+		
+		connectToDatabase();
+		
+		MongoCollection<Document> collection = database.getCollection("scores");
+		
+		Document doc = new Document();
+		doc.append("user", userName);
+		doc.append("suit", suit);
+		doc.append("points", points);
+		doc.append("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+		
+		collection.insertOne(doc);
+		
+		disconnectFromDatabase();
 	}
 }

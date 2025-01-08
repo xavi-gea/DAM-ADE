@@ -122,6 +122,37 @@ public class Controller {
 			
 		});
 		
+		viewMain.getBtnSave().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if (currentUser != null) {
+					
+					try {
+						
+						String[] splitGameLanguage = currentGame.getGameLanguage().split("_");
+						
+						Database.insertScore(currentUser.getName(), splitGameLanguage[1], currentGame.getPlayerTotalScore());
+						
+						JOptionPane.showMessageDialog(viewMain.getFrame(), "The score has been saved");
+						
+						viewMain.getBtnSave().setEnabled(false);
+						
+					} catch (Exception e2) {
+						
+						JOptionPane.showMessageDialog(viewLogin.getFrame(), "Error: Score could not be saved", "", JOptionPane.ERROR_MESSAGE);
+					}
+					
+				}else {
+					
+					JOptionPane.showMessageDialog(viewMain.getFrame(), "There must be a user logged in");
+				}
+			}
+		});
+		
+		// hall of fame
+		
 		viewMain.getBtnLogout().addActionListener(new ActionListener() {
 			
 			@Override
@@ -136,6 +167,8 @@ public class Controller {
 					currentUser = null;
 					viewMain.getBtnLogin().setEnabled(true);
 					viewMain.getBtnLogin().setBackground(new Color(197, 216, 234));
+					
+					resetGameBoard(false);
 					
 				}else {
 					
@@ -262,7 +295,7 @@ public class Controller {
 
 	private void startGame(int chosenStarter, String chosenLanguage) {
 		
-		resetGameBoard();
+		resetGameBoard(true);
 		
 		Boolean playerStarts = chosenStarter == 1 ? true : false;
 		
@@ -275,7 +308,7 @@ public class Controller {
 		if (!playerStarts) newGameTurn(true);
 	}
 	
-	private void resetGameBoard() {
+	private void resetGameBoard(Boolean resetPlayerButtons) {
 		
 		viewMain.getBtnCrupier().setIcon(null);
 		viewMain.getLblTotalScoreCrupier().setText(null);
@@ -287,8 +320,11 @@ public class Controller {
 		
 		viewMain.getBtnSave().setEnabled(false);
 		
-		viewMain.getBtnNewCard().setEnabled(true);
-		viewMain.getBtnStand().setEnabled(true);
+		if (resetPlayerButtons) {
+			
+			viewMain.getBtnNewCard().setEnabled(true);
+			viewMain.getBtnStand().setEnabled(true);
+		}
 	}
 
 	private void newGameTurn(Boolean takeNewCard) {
