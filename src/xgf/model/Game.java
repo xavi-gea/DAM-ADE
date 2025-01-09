@@ -3,6 +3,9 @@ package xgf.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Xavi
+ */
 public class Game {
 	
 	public static Boolean gameInProgress = false;
@@ -30,6 +33,11 @@ public class Game {
 		Game.gameInProgress = true;
 	}
 
+	/**
+	 * This method represents the AI of the Crupier, with multiple conditions that determines if he should keep playing
+	 * by increasing it's total score or if he stands
+	 * @param card
+	 */
 	public void makeCrupierPlay(Card card) {
 		
 		if (crupierTotalScore <= 16) {
@@ -62,6 +70,10 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * From the current list of available cards, return a new one and remove it to avoid repetition 
+	 * @return A new card
+	 */
 	public Card getNewCard() {
 		
 		Card newCard = cardList.getFirst();
@@ -70,6 +82,10 @@ public class Game {
 		return newCard;
 	}
 	
+	/**
+	 * Check if during the current game there is a winner 
+	 * @return True or False depending of the result
+	 */
 	public Boolean winnerExists() {
 		
 		if ((this.playerTotalScore >= 21 || this.crupierTotalScore >= 21) || (this.playerStands && this.crupierStands)) {

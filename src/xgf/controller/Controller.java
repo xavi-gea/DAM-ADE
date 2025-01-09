@@ -14,15 +14,16 @@ import java.util.List;
 
 import java.awt.Image;
 import javax.imageio.ImageIO;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.io.ByteArrayInputStream;
 import javax.swing.JOptionPane;
-import javax.swing.ListModel;
 
 import xgf.model.*;
 import xgf.view.*;
 
+/**
+ * @author Xavi
+ */
 public class Controller {
 
 	private MainPanel viewMain;
@@ -40,7 +41,8 @@ public class Controller {
 	
 	public Controller() {
 		
-		//Database.connectToDatabase();
+		new JSON();
+		Database.setConnectionString();
 		
 		viewMain = new MainPanel();
 		initMainEventHandler();
@@ -50,6 +52,9 @@ public class Controller {
 		
 		viewMain.getBtnLoadCards().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to load the cards that will be used for the game
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -66,6 +71,9 @@ public class Controller {
 		
 		viewMain.getBtnLogin().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to bring up the user login view
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -77,6 +85,9 @@ public class Controller {
 		
 		viewMain.getBtnRegister().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to bring up the register user view
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -89,10 +100,11 @@ public class Controller {
 		
 		viewMain.getBtnStart().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to start the game
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				// if gameStarted is not true and images loaded
 				
 				if (currentUser != null) {
 					
@@ -127,6 +139,9 @@ public class Controller {
 		
 		viewMain.getBtnSave().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to save the current game
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -136,7 +151,12 @@ public class Controller {
 						
 						String[] splitGameLanguage = currentGame.getGameLanguage().split("_");
 						
-						Database.insertScore(currentUser.getName(), splitGameLanguage[1], currentGame.getPlayerTotalScore());
+						Database.insertScore(
+								currentUser.getName(), 
+								splitGameLanguage[1], 
+								currentGame.getPlayerTotalScore(), 
+								JSON.getCollections().getString(3)
+						);
 						
 						JOptionPane.showMessageDialog(viewMain.getFrame(), "The score has been saved", "Info", JOptionPane.INFORMATION_MESSAGE);
 						
@@ -156,12 +176,15 @@ public class Controller {
 		
 		viewMain.getBtnHallOfFame().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to bring up the hall of fame view
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
 				if (currentUser != null) {
 					
-					List<String> scoreList = Database.getScoresFromCollection("scores");
+					List<String> scoreList = Database.getScoresFromCollection(JSON.getCollections().getString(3));
 					
 					viewhallOfFame = new HallOfFame();
 					viewhallOfFame.getFrame().setLocationRelativeTo(viewMain.getFrame());
@@ -177,10 +200,11 @@ public class Controller {
 		
 		viewMain.getBtnLogout().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to log out
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				// if gameStarted is not true
 				
 				if (currentUser != null) {
 					
@@ -201,6 +225,9 @@ public class Controller {
 		
 		viewMain.getBtnNewCard().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to go to the next turn by getting a new card
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -210,6 +237,9 @@ public class Controller {
 		
 		viewMain.getBtnStand().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to go to the next turn by making the player stand
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -246,6 +276,13 @@ public class Controller {
 				}
 			}
 			
+			
+			/**
+			 * If the user exists, perform the log in
+			 * @param userName Name of the user
+			 * @param userPassword Password of the user
+			 * @throws NoSuchAlgorithmException When the user does not exist
+			 */
 			private void userLogin(String userName, char[] userPassword) throws NoSuchAlgorithmException {
 				
 				User user = new User(userName, userPassword);
@@ -268,6 +305,9 @@ public class Controller {
 		
 		viewRegister.getBtnRegister().addActionListener(new ActionListener() {
 			
+			/**
+			 * When the specified action is performed, try to register the user
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -315,6 +355,12 @@ public class Controller {
 	}
 	
 
+	/**
+	 * With the provided starter (Crupier or User) and language, reset the game board and try to start a new game
+	 * by obtaining a new list of cards and shuffling them 
+	 * @param chosenStarter Starter of the game (Crupier or User)
+	 * @param chosenLanguage Language of the cards to start the game with
+	 */
 	private void startGame(int chosenStarter, String chosenLanguage) {
 		
 		resetGameBoard(true);
@@ -330,6 +376,11 @@ public class Controller {
 		if (!playerStarts) newGameTurn(true);
 	}
 	
+	
+	/**
+	 * Reset the relevant buttons, labels and images
+	 * @param resetPlayerButtons If the buttons related to the player actions (New card and Stand) should be reset
+	 */
 	private void resetGameBoard(Boolean resetPlayerButtons) {
 		
 		viewMain.getBtnCrupier().setIcon(null);
@@ -349,6 +400,12 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * Main loop of the game
+	 * Start a new turn and, if takeNewCard is true, draw a new card
+	 * Here is also where it is decided if it's the turn of the User or Crupier and if the game must finish
+	 * @param takeNewCard If a new card must be draw
+	 */
 	private void newGameTurn(Boolean takeNewCard) {
 		
 		Card cardFromList = null;
@@ -429,6 +486,10 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * If an Ace card has been draw, allow the user to choose how many points he receives
+	 * @return Integer with the points chosen
+	 */
 	private Integer getAcePoints() {
 		
 		String[] options = {"1","11"};
@@ -447,6 +508,9 @@ public class Controller {
 		return chosenStarter == 1 ? 11 : 1;
 	}
 
+	/**
+	 * Set the state of relevant buttons and decide who wins 
+	 */
 	private void endGame() {
 		
 		Game.gameInProgress = false;
@@ -472,13 +536,16 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * From the provided card, return the associated image 
+	 * @param card Card to obtain it's image
+	 * @return Image The image of the card
+	 */
 	private Image getImageFromCard(Card card) {
 		
 		Image cardImage = null;
 		
 		String cardBase64 = Database.getBase64FromCard(card,currentGame.getGameLanguage());
-		
-//		System.out.println(cardBase64);
 		
 		byte[] base64ToBytes = Base64.getDecoder().decode(cardBase64);
 		

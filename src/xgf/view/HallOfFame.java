@@ -35,8 +35,6 @@ public class HallOfFame {
 		listScores = new JList<String>();
 		scrollPane.setViewportView(listScores);
 		
-		
-		
 		frame.setVisible(true);
 	}
 	

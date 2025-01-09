@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bson.types.ObjectId;
-import org.json.JSONObject;
 
+/**
+ * @author Xavi
+ */
 public class Card {
 
 	private String id;
@@ -34,6 +34,11 @@ public class Card {
 	}
 	
 	
+	/**
+	 * From the specified folder, return a list of cards
+	 * @param folder Folder that contains the future cards
+	 * @return List of cards
+	 */
 	public static List<Card> getCardsfromFolder(File folder) {
 		
 		List<Card> cardList = new ArrayList<Card>();
@@ -63,7 +68,11 @@ public class Card {
 	}
 	
 	
-	
+	/**
+	 * From a given string, return it with the file extension at the end removed
+	 * @param fileName String that contains the extension
+	 * @return String without the extension
+	 */
 	private static String removeExtension(String fileName) {
 		
 		String extensionArchivo = "";

@@ -4,5 +4,5 @@
     "ip":"localhost",
     "port":"27017",
     "database":"casino",
-    "collections":["","","",""]
+	"collections":["cards_es","cards_fr","users","scores"]
 }

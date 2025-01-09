@@ -4,6 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * @author Xavi
+ */
 public class User {
 
 	private String name;
@@ -16,7 +19,7 @@ public class User {
 	}
 
 	/**
-	 * From the provided password, return a generated hash in MD5 algorithm
+	 * From the provided password, return a generated hash in SHA-256 algorithm
 	 * @param password Password to be converted
 	 * @return Hashed password
 	 * @throws NoSuchAlgorithmException When the specified algorithm cannot be found

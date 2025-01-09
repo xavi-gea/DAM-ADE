@@ -41,7 +41,7 @@ public class MainPanel {
 	public MainPanel() {
 		
 		frmBackjack = new JFrame();
-		frmBackjack.setTitle("21 BackJack");
+		frmBackjack.setTitle("21 BlackJack");
 		frmBackjack.setBounds(100, 100, 896, 648);
 		frmBackjack.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmBackjack.getContentPane().setLayout(null);
