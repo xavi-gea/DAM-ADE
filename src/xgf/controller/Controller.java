@@ -34,14 +34,14 @@ public class Controller {
 	private User currentUser;
 	private Game currentGame;
 	
-	private static File[] foldersToSearch = {
+	private static final File[] foldersToSearch = {
 			new File("." + File.separator + "img" + File.separator + "cards_es"),
 			new File("." + File.separator + "img" + File.separator + "cards_fr")
 	};
 	
 	public Controller() {
 		
-		new JSON();
+		new Config();
 		Database.setConnectionString();
 		
 		viewMain = new MainPanel();
@@ -66,6 +66,8 @@ public class Controller {
 					
 					Database.insertCardsToCollection(cardList, folder.getName());
 				}
+				
+				JOptionPane.showMessageDialog(viewMain.getFrame(), "Cards have been loaded", "Info", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		
@@ -155,7 +157,7 @@ public class Controller {
 								currentUser.getName(), 
 								splitGameLanguage[1], 
 								currentGame.getPlayerTotalScore(), 
-								JSON.getCollections().getString(3)
+								Config.getCollections().getString("scores")
 						);
 						
 						JOptionPane.showMessageDialog(viewMain.getFrame(), "The score has been saved", "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -184,7 +186,7 @@ public class Controller {
 				
 				if (currentUser != null) {
 					
-					List<String> scoreList = Database.getScoresFromCollection(JSON.getCollections().getString(3));
+					List<String> scoreList = Database.getScoresFromCollection(Config.getCollections().getString("scores"));
 					
 					viewhallOfFame = new HallOfFame();
 					viewhallOfFame.getFrame().setLocationRelativeTo(viewMain.getFrame());

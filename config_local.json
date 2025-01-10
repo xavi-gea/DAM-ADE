@@ -4,5 +4,10 @@
     "ip":"localhost",
     "port":"27017",
     "database":"casino",
-	"collections":["cards_es","cards_fr","users","scores"]
+	"collections":{
+		"cards_es":"cards_es",
+		"cards_fr":"cards_fr",
+		"users":"users",
+		"scores":"scores"
+	}
 }

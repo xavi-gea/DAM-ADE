@@ -33,9 +33,9 @@ public class Database {
 	 */
 	public static void setConnectionString() {
 		
-		String textTemplate = "mongodb://%s:%s@localhost:%s/";
+		final String textTemplate = "mongodb://%s:%s@localhost:%s/";
         
-		connectionString = new MongoClientURI(String.format(textTemplate, JSON.getUser(),JSON.getPass(),JSON.getPort()));
+		connectionString = new MongoClientURI(String.format(textTemplate, Config.getUser(),Config.getPass(),Config.getPort()));
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class Database {
 			
 			mongoClient = new MongoClient(connectionString);
 			
-			database = mongoClient.getDatabase(JSON.getDatabase());
+			database = mongoClient.getDatabase(Config.getDatabase());
 			
 		} catch (IllegalArgumentException e) {
 			
@@ -117,7 +117,7 @@ public class Database {
 				eq("pass", password)
 		);
 				
-		MongoCollection<Document> users = database.getCollection(JSON.getCollections().getString(2));
+		MongoCollection<Document> users = database.getCollection(Config.getCollections().getString("users"));
 		
 		MongoCursor<Document> usersCursor = users.find(queryUserPassword).iterator();
 		
@@ -135,7 +135,7 @@ public class Database {
 		
 		connectToDatabase();
 		
-		MongoCollection<Document> users = database.getCollection(JSON.getCollections().getString(2));
+		MongoCollection<Document> users = database.getCollection(Config.getCollections().getString("users"));
 		
 		Document doc = new Document();
 		doc.append("user", name);

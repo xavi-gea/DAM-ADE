@@ -6,26 +6,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
  * @author Xavi
  */
-public class JSON {
+public class Config {
 
-	private Path jsonFileLocation = Paths.get("." + File.separator + "config_local.json");
+	private final Path jsonFileLocation = Paths.get("." + File.separator + "config_local.json");
 	private static String user;
 	private static String pass;
 	private static String ip;
 	private static String port;
 	private static String database;
-	private static JSONArray collections;
+	private static JSONObject collections;
 	
 	/**
 	 * Set up static variables with data obtained from JSON
 	 */
-	public JSON(){
+	public Config(){
 		
 		String jsonString = "";
 		
@@ -44,7 +43,7 @@ public class JSON {
 		pass = jsonContent.getString("pass");
 		port = jsonContent.getString("port");
 		database = jsonContent.getString("database");
-		collections = jsonContent.getJSONArray("collections");
+		collections = jsonContent.getJSONObject("collections");
 	}
 
 	public static String getUser() {
@@ -67,7 +66,7 @@ public class JSON {
 		return database;
 	}
 
-	public static JSONArray getCollections() {
+	public static JSONObject getCollections() {
 		return collections;
 	}
 }
