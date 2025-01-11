@@ -242,7 +242,7 @@ public class Database {
 	 */
 	public static List<String> getScoresFromCollection(String collectionName) {
 		
-		String textTemplate = "%s %o points (Suit %S, %s)";
+		String textTemplate = "%s %s points (Suit %S, %s)";
 		
 		List<String> scoreList = new ArrayList<String>();
 		
@@ -255,6 +255,8 @@ public class Database {
 		while (cardCursor.hasNext()) {
 			
 			JSONObject cardJson = new JSONObject(cardCursor.next().toJson());
+			
+			System.out.println("points as int: " + cardJson.getInt("points"));
 			
 			scoreList.add(
 					String.format(

@@ -17,8 +17,9 @@ public class HallOfFame {
 	public HallOfFame() {
 		
 		frame = new JFrame();
-		frame.setResizable(false);
 		frame.setTitle("Hall of Fame");
+		frame.setResizable(false);
+		frame.setAlwaysOnTop(true);
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
