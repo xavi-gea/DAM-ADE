@@ -319,7 +319,7 @@ public class Controller {
 					char[] userPassword = viewRegister.getPasswordUser().getPassword();
 					char[] userPasswordRepeated = viewRegister.getPasswordUserRepeat().getPassword();
 					
-					if (!userName.isEmpty() && !userPassword.equals(null) && !userPasswordRepeated.equals(null)) {
+					if (!userName.isEmpty() && (userPassword.length > 0) && (userPasswordRepeated.length > 0)) {
 						
 						User user = new User(userName, userPassword);
 						
