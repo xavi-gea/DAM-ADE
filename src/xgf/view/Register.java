@@ -28,6 +28,7 @@ public class Register {
 		
 		frmRegister = new JFrame();
 		frmRegister.setTitle("Register");
+		frmRegister.setResizable(false);
 		frmRegister.setAlwaysOnTop(true);
 		frmRegister.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmRegister.setBounds(100, 100, 265, 264);
