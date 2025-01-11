@@ -256,8 +256,6 @@ public class Database {
 			
 			JSONObject cardJson = new JSONObject(cardCursor.next().toJson());
 			
-			System.out.println("points as int: " + cardJson.getInt("points"));
-			
 			scoreList.add(
 					String.format(
 							textTemplate, 
