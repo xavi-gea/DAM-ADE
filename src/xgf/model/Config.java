@@ -35,12 +35,13 @@ public class Config {
 		} catch (IOException e) {
 			
 			e.printStackTrace();
-		}	
+		}
 		
 		JSONObject jsonContent = new JSONObject(jsonString);
 		
 		user = jsonContent.getString("user");
 		pass = jsonContent.getString("pass");
+		ip = jsonContent.getString("ip");
 		port = jsonContent.getString("port");
 		database = jsonContent.getString("database");
 		collections = jsonContent.getJSONObject("collections");

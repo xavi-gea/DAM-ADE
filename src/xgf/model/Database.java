@@ -44,7 +44,10 @@ public class Database {
 	public static void connectToDatabase() {
 		
 		try {
+			// either this
+			//mongoClient = new MongoClient(Config.getIp(), Integer.parseInt(Config.getPort()));
 			
+			// or this
 			mongoClient = new MongoClient(connectionString);
 			
 			database = mongoClient.getDatabase(Config.getDatabase());
