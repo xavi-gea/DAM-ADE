@@ -1,0 +1,11 @@
+{
+    "user":"user",
+    "pass":"pass",
+    "ip":"localhost",
+    "port":"27017",
+    "database":"peliculas",
+	"collections":{
+		"peliculas":"peliculas",
+		"users":"users"
+	}
+}
